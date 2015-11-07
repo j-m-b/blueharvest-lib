@@ -17,6 +17,7 @@ public abstract class user {
     private final boolean locked;
     private final location location;
     private final image image;
+    private final role role;
 
     /**
      * <h3>constructor</h3>
@@ -29,14 +30,17 @@ public abstract class user {
      * @param email email (i.e., username@domain.ext)
      * @param active active (i.e., true/false)
      * @param locked locked (i.e., true/false)
-     * @param location current location of the user. null if unknown.
-     * @param image avatar image of the user. null if none or unknown.
+     * @param location current location of the user; null if unknown.
+     * @param image avatar image of the user; null if none or unknown.
+     * @param role role of the user
+     * @see blueharvest.geocaching.concepts.location
      * @see blueharvest.geocaching.concepts.image
+     * @see blueharvest.geocaching.concepts.role
      * @since 2015-10-13
      */
     public user(java.util.UUID id, java.util.Date anniversary, String username,
         String password, java.util.UUID salt, String email, boolean active,
-        boolean locked, location location, image image) {
+        boolean locked, location location, image image, role role) {
         this.id = id;
         this.anniversary = anniversary;
         this.username = username;
@@ -47,46 +51,29 @@ public abstract class user {
         this.locked = locked;
         this.location = location;
         this.image = image;
+        this.role = role;
     }
 
-    public java.util.UUID getId() {
-        return id;
-    }
+    public java.util.UUID getId() { return id; }
 
-    public java.util.Date getAnniversary() {
-        return anniversary;
-    }
+    public java.util.Date getAnniversary() { return anniversary; }
 
-    public String getUsername() {
-        return username;
-    }
+    public String getUsername() { return username; }
 
-    public String getPassword() {
-        return password;
-    }
+    public String getPassword() { return password; }
 
-    public java.util.UUID getSalt() {
-        return salt;
-    }
+    public java.util.UUID getSalt() { return salt; }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getEmail() { return email; }
 
-    public boolean isActive() {
-        return active;
-    }
+    public boolean isActive() { return active; }
 
-    public boolean isLocked() {
-        return locked;
-    }
+    public boolean isLocked() { return locked; }
 
-    public location getLocation() {
-        return location;
-    }
+    public location getLocation() { return location; }
 
-    public image getImage() {
-        return image;
-    }
+    public image getImage() { return image; }
+
+    public role getRole() { return role; }
 
 }

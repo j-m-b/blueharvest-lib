@@ -1,14 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package blueharvest.geocaching.resources;
 
 /**
  *
  * @author jmb
- * @warning not fully tested in an Android environment, but could come in handy
+ * @warning not for use in an Android environment
  */
 public class properties extends java.util.Properties {
 
