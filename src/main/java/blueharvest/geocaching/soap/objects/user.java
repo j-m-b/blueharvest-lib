@@ -65,8 +65,7 @@ public class user extends blueharvest.geocaching.concepts.user { // implements s
                     new java.text.SimpleDateFormat(
                             "yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US).parse(
                             response.getProperty("anniversary").toString()),
-                    response.getProperty("anniversary").toString(), // username
-                    response.getProperty("password").toString(),
+                    username, response.getProperty("password").toString(),
                     java.util.UUID.fromString(response.getProperty("salt").toString()),
                     response.getProperty("email").toString(),
                     Boolean.valueOf(response.getProperty("active").toString()),
