@@ -33,6 +33,8 @@ public abstract class user {
      * @param location current location of the user; null if unknown.
      * @param image avatar image of the user; null if none or unknown.
      * @param role role of the user
+     * @see java.util.UUID
+     * @see java.util.Date
      * @see blueharvest.geocaching.concepts.location
      * @see blueharvest.geocaching.concepts.image
      * @see blueharvest.geocaching.concepts.role
