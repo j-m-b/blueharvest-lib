@@ -63,22 +63,24 @@ public class user extends blueharvest.geocaching.concepts.user { // implements s
                     = (org.ksoap2.serialization.SoapObject) envelope.getResponse();
             u = new user(java.util.UUID.fromString(response.getProperty("id").toString()),
                     new java.text.SimpleDateFormat(
-                            "yyyy-MM-dd'T'HH:mm:ssZ", java.util.Locale.US).parse(
+                            "yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US).parse(
                             response.getProperty("anniversary").toString()),
-                    username,
+                    response.getProperty("anniversary").toString(), // username
                     response.getProperty("password").toString(),
                     java.util.UUID.fromString(response.getProperty("salt").toString()),
                     response.getProperty("email").toString(),
                     Boolean.valueOf(response.getProperty("active").toString()),
                     Boolean.valueOf(response.getProperty("locked").toString()),
                     null, null,  // todo: location, image
-                    new role(java.util.UUID.fromString(response.getProperty("roleid").toString()),
-                            response.getProperty("rolename").toString()));
-
+                    new role(java.util.UUID.fromString(
+                            ((org.ksoap2.serialization.SoapObject) response.getProperty("role"))
+                                    .getProperty("id").toString()),
+                            ((org.ksoap2.serialization.SoapObject) response.getProperty("role"))
+                                    .getProperty("name").toString()));
         } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
             // todo: do something
         } catch (java.text.ParseException ex) {
-            // todo: do something
+            throw new RuntimeException(ex.getMessage());
         }
         return u;
     }
