@@ -47,8 +47,38 @@ public class location extends blueharvest.geocaching.concepts.location {
         return response;
     }
 
-    public static location get(java.util.UUID id) { // see image
-        throw new java.lang.UnsupportedOperationException("Not supported yet.");
+    /**
+     * <h3>gets a location</h3>
+     *
+     * @param id id
+     * @return location
+     * @see <a href="https://blueharvestgeo.com/WebServices/LocationService.asmx?op=GetLocation">
+     * GetLocation</a>
+     * @since 2015-11-09
+     */
+    public static location get(java.util.UUID id) {
+        location l;
+        org.ksoap2.serialization.SoapObject request
+                = new blueharvest.geocaching.soap.request("GetLocation");
+        // parameters
+        request.addProperty("id", id.toString());
+        org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                = new blueharvest.geocaching.soap.envelope();
+        envelope.setOutputSoapObject(request);
+        org.ksoap2.transport.HttpTransportSE transport
+                = new org.ksoap2.transport.HttpTransportSE(url);
+        try {
+            transport.call("http://blueharvestgeo.com/webservices/GetLocation", envelope);
+            org.ksoap2.serialization.SoapObject response
+                    = (org.ksoap2.serialization.SoapObject) envelope.getResponse();
+            l = new location(java.util.UUID.fromString(response.getProperty("id").toString()), null,
+                    Double.parseDouble(response.getProperty("latitude").toString()),
+                    Double.parseDouble(response.getProperty("longitude").toString()),
+                    Integer.parseInt(response.getProperty("altitude").toString()), null);
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+        return l;
     }
 
     public static location get(double latitude, double longitude) {
