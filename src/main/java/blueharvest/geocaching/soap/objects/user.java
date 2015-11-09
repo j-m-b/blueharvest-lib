@@ -30,11 +30,11 @@ public class user extends blueharvest.geocaching.concepts.user {
      * @see blueharvest.geocaching.concepts.role
      * @since 2015-11-07
      */
-    private user(java.util.UUID id, java.util.Date anniversary, String username,
-                 String password, java.util.UUID salt, String email, boolean active,
-                 boolean locked, blueharvest.geocaching.concepts.location location,
-                 blueharvest.geocaching.concepts.image image,
-                 blueharvest.geocaching.concepts.role role) {
+    public user(java.util.UUID id, java.util.Date anniversary, String username,
+                String password, java.util.UUID salt, String email, boolean active,
+                boolean locked, blueharvest.geocaching.concepts.location location,
+                blueharvest.geocaching.concepts.image image,
+                blueharvest.geocaching.concepts.role role) {
         super(id, anniversary, username, password, salt, email, active, locked,
                 location, image, role);
         request = "";
@@ -110,36 +110,22 @@ public class user extends blueharvest.geocaching.concepts.user {
      * inserts a user through the web service into storage; username,
      * password (clear text), email, active, locked, and role.name are req'd; id and
      * anniversary default in storage; salt and password (hashed) computed
-     * by the web service
-     * todo: complexType implementation
+     * by the web service<br />
+     * for a simpler way, see
+     * {@link blueharvest.geocaching.soap.objects.user#insert(String, String, String, String)}
      *
      * @param u (u)ser
      * @return true/false dependent on whether the user was inserted
-     * @throws java.lang.UnsupportedOperationException not supported yet
      * @see <a href="https://blueharvestgeo.com/WebServices/UserService.asmx?op=InsertUser">InsertUser</a>
      * @since 2015-11-07
-     * @deprecated use {@link blueharvest.geocaching.soap.objects.user#insert(String, String, String, String)}
      */
     public static boolean insert(user u) {
-        //throw new java.lang.UnsupportedOperationException("Not supported yet.");
         org.ksoap2.serialization.SoapObject request
                 = new blueharvest.geocaching.soap.request("InsertUser");
-        // todo: complexType
-        /*String xml = "<u>" +
-                "<username>" + u.getUsername() + "</username>" +
-                "<password>" + u.getPassword() + "</password>" +
-                "<email>" + u.getEmail() + "</email>" +
-                "<active>" + String.valueOf(u.isActive()) + "</active>" +
-                "<locked>" + String.valueOf(u.isLocked()) + "</locked>" +
-                "<role><name>" + u.getRole().getName() + "</name></role>" +
-                "</u>";
-        request.setInnerText(xml); // outputs cdata
-        */
-
-        // never returns anything but false
         final String ns = "http://blueharvestgeo.com/webservices/";
+        // parameters
         org.ksoap2.serialization.SoapObject user
-                = new org.ksoap2.serialization.SoapObject(ns, "user");
+                = new org.ksoap2.serialization.SoapObject(ns, "u");
         //user.addProperty("id", null);
         //user.addProperty("anniversary", null);
         user.addProperty("username", u.getUsername());
@@ -155,30 +141,12 @@ public class user extends blueharvest.geocaching.concepts.user {
         user.addSoapObject(role);
         //user.addProperty("empty", null);
         request.addSoapObject(user);
-
-        // some things aren't serializable
-        /*blueharvest.geocaching.soap.objects.user.serialized v
-                = new blueharvest.geocaching.soap.objects.user.serialized();
-        v.username = u.getUsername();
-        v.password = u.getPassword();
-        v.email = u.getEmail();
-        v.active = u.isActive();
-        v.locked = u.isLocked();
-        v.role = new blueharvest.geocaching.soap.objects.role.serialized();
-        org.ksoap2.serialization.PropertyInfo pi = new org.ksoap2.serialization.PropertyInfo();
-        pi.setName("u");
-        pi.setValue(v);
-        pi.setType("User");
-        request.addProperty(pi);
-        */
-
+        // end paramters
         org.ksoap2.serialization.SoapSerializationEnvelope envelope
                 = new blueharvest.geocaching.soap.envelope();
         envelope.implicitTypes = true;
         envelope.setAddAdornments(false); // prefixing
         envelope.setOutputSoapObject(request);
-        // for **returning** a complexType
-        //envelope.addMapping("http://blueharvestgeo.com/webservices/", "User", u.getClass());
         org.ksoap2.transport.HttpTransportSE transport
                 = new org.ksoap2.transport.HttpTransportSE(url); // ?wsdl
         transport.debug = true; // testing
@@ -207,14 +175,15 @@ public class user extends blueharvest.geocaching.concepts.user {
      * inserts a user through the web service into storage; parameters req'd; id and anniversary
      * default in storage; salt and password (hashed) computed by the web service;
      * active is true and locked is false; specify "Basic" user.role.name for general users
-     * use instead of {@link blueharvest.geocaching.soap.objects.user#insert(user)}
+     * for a more complex way, use {@link blueharvest.geocaching.soap.objects.user#insert(user)}
      *
      * @param username unique username
      * @param password clear text password
      * @param email    email (ex. handle@domain.com)
      * @param rolename role for the user (ex. Basic, Premium, etc.)
      * @return true/false dependent on whether the user was inserted
-     * @see <a href="https://blueharvestgeo.com/WebServices/UserService.asmx?op=InsertSimpleUser">InsertSimpleUser</a>
+     * @see <a href="https://blueharvestgeo.com/WebServices/UserService.asmx?op=InsertSimpleUser">
+     * InsertSimpleUser</a>
      * @since 2015-11-08
      */
     public static boolean insert(String username, String password, String email, String rolename) {
