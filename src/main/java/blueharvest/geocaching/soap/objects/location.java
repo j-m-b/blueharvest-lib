@@ -105,7 +105,7 @@ public class location extends blueharvest.geocaching.concepts.location {
         org.ksoap2.serialization.SoapObject location
                 = new org.ksoap2.serialization.SoapObject(ns, "l");
         location.addProperty("latitude", l.getLatitude().getDecimalDegrees());
-        location.addProperty("longitude", l.getLatitude().getDecimalDegrees());
+        location.addProperty("longitude", l.getLongitude().getDecimalDegrees());
         location.addProperty("altitude", l.getAltitude());
         // todo: address
         request.addSoapObject(location);
