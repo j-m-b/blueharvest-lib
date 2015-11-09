@@ -52,14 +52,13 @@ public class image extends blueharvest.geocaching.concepts.image {
      * @return image
      * @see <a href="https://blueharvestgeo.com/WebServices/ImageService.asmx?op=GetImage">GetImage</a>
      * @since 2015-11-09
-     * todo: test
      */
     public static image get(java.util.UUID id) {
         image i;
         org.ksoap2.serialization.SoapObject request
                 = new blueharvest.geocaching.soap.request("GetImage");
         // parameters
-        request.addProperty("id", id);
+        request.addProperty("id", id.toString());
         org.ksoap2.serialization.SoapSerializationEnvelope envelope
                 = new blueharvest.geocaching.soap.envelope();
         envelope.setOutputSoapObject(request);
@@ -85,7 +84,6 @@ public class image extends blueharvest.geocaching.concepts.image {
      * @return true/false depending on whether the image was inserted
      * @see <a href="https://blueharvestgeo.com/WebServices/ImageService.asmx?op=InsertImage">InsertImage</a>
      * @since 2015-11-09
-     * todo: test
      */
     public static boolean insert(image i) {
         org.ksoap2.serialization.SoapObject request
