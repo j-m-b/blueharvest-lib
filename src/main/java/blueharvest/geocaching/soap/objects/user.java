@@ -284,12 +284,32 @@ public class user extends blueharvest.geocaching.concepts.user {
      * @param username unique username of the user
      * @param password password (plain text) of the user
      * @return true/false dependent on credentials and inner exceptions
-     * @throws java.lang.UnsupportedOperationException not supported yet
+     * @see <a href="https://blueharvestgeo.com/WebServices/UserService.asmx?op=AuthUser">AuthUser</a>
      * @since 2015-11-07
      */
     public static boolean auth(String username, String password) {
-        throw new java.lang.UnsupportedOperationException("Not supported yet.");
-        //return false;
+        org.ksoap2.serialization.SoapObject request
+                = new blueharvest.geocaching.soap.request("AuthUser");
+        // parameters
+        request.addProperty("username", username);
+        request.addProperty("password", password);
+        org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                = new blueharvest.geocaching.soap.envelope();
+        envelope.setOutputSoapObject(request);
+        org.ksoap2.transport.HttpTransportSE transport
+                = new org.ksoap2.transport.HttpTransportSE(url);
+        try {
+            transport.call("http://blueharvestgeo.com/webservices/AuthUser", envelope);
+            org.ksoap2.serialization.SoapPrimitive response
+                    = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
+            return Boolean.parseBoolean(response.toString());
+        } catch (java.io.IOException ex) {
+            // todo: do something
+            return false;
+        } catch (org.xmlpull.v1.XmlPullParserException ex) {
+            // todo: do something
+            return false;
+        }
     }
 
     /**
@@ -301,7 +321,7 @@ public class user extends blueharvest.geocaching.concepts.user {
      */
     public static class serialized implements org.ksoap2.serialization.KvmSerializable {
 
-        public java.util.UUID id;
+        public java.util.UUID id; // this may be a problem ...
         public java.util.Date anniversary;
         public String username;
         public String password;
