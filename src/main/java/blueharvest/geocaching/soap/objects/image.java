@@ -82,7 +82,8 @@ public class image extends blueharvest.geocaching.concepts.image {
      *
      * @param i (i)mage
      * @return true/false depending on whether the image was inserted
-     * @see <a href="https://blueharvestgeo.com/WebServices/ImageService.asmx?op=InsertImage">InsertImage</a>
+     * @see <a href="https://blueharvestgeo.com/WebServices/ImageService.asmx?op=InsertImage">
+     * InsertImage</a>
      * @since 2015-11-09
      */
     public static boolean insert(image i) {

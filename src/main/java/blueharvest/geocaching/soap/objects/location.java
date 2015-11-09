@@ -6,6 +6,11 @@ package blueharvest.geocaching.soap.objects;
  */
 public class location extends blueharvest.geocaching.concepts.location {
 
+    private final static String url = "https://blueharvestgeo.com/WebServices/LocationService.asmx";
+
+    private String request;
+    private String response;
+
     /**
      * <h3>location</h3>
      * represents the latitude and longitude coordinates on globe
@@ -16,19 +21,100 @@ public class location extends blueharvest.geocaching.concepts.location {
      * @param longitude longitude coordinate
      * @param altitude  altitude
      * @param address   address
-     * @see coordinate
+     * @see blueharvest.geocaching.concepts.location.coordinate
+     * @since 2015-11
      */
     public location(java.util.UUID id, String name, double latitude, double longitude,
                     int altitude, blueharvest.geocaching.concepts.address address) {
         super(id, name, latitude, longitude, altitude, address);
+        request = "";
+        response = "";
     }
 
-    public static location get(java.util.UUID id) {
+    public void setRequest(String value) {
+        request = value;
+    }
+
+    public void setResponse(String value) {
+        response = value;
+    }
+
+    public String getRequest() {
+        return request;
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public static location get(java.util.UUID id) { // see image
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
+    public static location get(double latitude, double longitude) {
+        throw new java.lang.UnsupportedOperationException("Houston, we have a problem!");
+    }
+
+    /**
+     * <h3>inserts a location</h3>
+     * <a href="http://www.latlong.net/place/statue-of-liberty-national-monument-new-york-usa-2122.html">
+     * Statue of Liberty National Monument</a><br />
+     * coordinates: 40.689247, -74.044502, altitude/elevation: 3 meters or 10 feet
+     * todo: address
+     *
+     * @param l (l)ocation
+     * @return true/false depending on whether the location was inserted
+     * @see <a href="https://blueharvestgeo.com/WebServices/LocationService.asmx?op=InsertLocation">
+     * InsertLocation</a>
+     * @since 2015-11-09
+     */
     public static boolean insert(location l) {
-        throw new java.lang.UnsupportedOperationException("Not supported yet.");
+        org.ksoap2.serialization.SoapObject request
+                = new blueharvest.geocaching.soap.request("InsertLocation");
+        final String ns = "http://blueharvestgeo.com/webservices/";
+        org.ksoap2.serialization.SoapObject location
+                = new org.ksoap2.serialization.SoapObject(ns, "l");
+        location.addProperty("latitude", l.getLatitude().getDecimalDegrees());
+        location.addProperty("longitude", l.getLatitude().getDecimalDegrees());
+        location.addProperty("altitude", l.getAltitude());
+        // todo: address
+        request.addSoapObject(location);
+        org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                = new blueharvest.geocaching.soap.envelope();
+        // marshal double
+        // http://seesharpgears.blogspot.com/2010/11/implementing-ksoap-marshal-interface.html
+        blueharvest.geocaching.soap.objects.marshals.MarshalDouble md
+                = new blueharvest.geocaching.soap.objects.marshals.MarshalDouble();
+        md.register(envelope);
+        envelope.implicitTypes = true;
+        envelope.setAddAdornments(false); // prefixing
+        envelope.setOutputSoapObject(request);
+        org.ksoap2.transport.HttpTransportSE transport
+                = new org.ksoap2.transport.HttpTransportSE(url);
+        transport.debug = true; // testing
+        try {
+            transport.call("http://blueharvestgeo.com/webservices/InsertLocation", envelope);
+            org.ksoap2.serialization.SoapPrimitive response
+                    = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
+            l.setRequest(transport.requestDump); // testing
+            l.setResponse(transport.responseDump); // testing
+            return Boolean.parseBoolean(response.toString());
+        } catch (org.ksoap2.SoapFault ex) {
+            throw new RuntimeException(
+                    "soap fault:" + ex.getMessage() + " ... " + transport.requestDump);
+        } catch (org.ksoap2.transport.HttpResponseException ex) {
+            throw new RuntimeException(
+                    "http response exception:" + ex.getMessage() + " ... " + transport.requestDump);
+        } catch (java.io.IOException ex) {
+            throw new RuntimeException(
+                    "io exception:" + ex.getMessage() + " ... " + transport.requestDump);
+        } catch (org.xmlpull.v1.XmlPullParserException ex) {
+            throw new RuntimeException(
+                    "xml pull parser exception:" + ex.getMessage() + " ... " + transport.requestDump);
+        } catch (java.lang.Exception ex) {
+            throw new RuntimeException(
+                    "exception:" + ex.getLocalizedMessage() + " ... " + transport.requestDump);
+        }
     }
 
     public static boolean update(location l) {
