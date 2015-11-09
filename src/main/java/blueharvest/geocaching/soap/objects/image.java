@@ -148,6 +148,57 @@ public class image extends blueharvest.geocaching.concepts.image {
     }
 
     /**
+     * <h3>uploads an image</h3>
+     * uploads an image to Amazon Web Services (AWS) Simple Storage Service (S3)
+     * to a specific bucket in the 'images' directory; the filename is identical
+     * to that of the file itself; only .jpg and .png permitted as per a policy
+     * specified in the AWS Console
+     * todo: implement and test
+     *
+     * @param f (f)ile to be uploaded
+     * @return true/false whether the image was uploaded
+     * @throws java.lang.UnsupportedOperationException
+     * @throws java.lang.UnsupportedOperationException
+     * @see <a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjSingleOpJava.html">
+     * Upload an Object Using the AWS SDK for Java</a>
+     * @see <a href="http://javatutorial.net/java-s3-example">Java S3 Example</a>
+     * @since 2015-11-01
+     */
+    public static boolean upload(java.io.File f) {
+        throw new java.lang.UnsupportedOperationException("Not supported yet.");
+        // todo: setup sdk for android
+        // http://docs.aws.amazon.com/mobile/sdkforandroid/developerguide/setup.html
+        /*
+        try {
+            java.util.Properties p = new java.util.Properties();
+            // replace config.properties
+            p.load(new Object().getClass().getResourceAsStream(
+                    "/blueharvest/geocaching/resources/config.properties"));
+            com.amazonaws.auth.AWSCredentials credentials
+                    = new com.amazonaws.auth.BasicAWSCredentials(
+                    p.getProperty("awskid"), p.getProperty("awssk")); // todo: fix
+            com.amazonaws.services.s3.AmazonS3 s3client
+                    = new com.amazonaws.services.s3.AmazonS3Client(credentials);
+            s3client.putObject(new com.amazonaws.services.s3.model.PutObjectRequest(
+                    p.getProperty("s3bucket"), "images/" + f.getName(), f)
+                    .withCannedAcl(com.amazonaws.services.s3.model.CannedAccessControlList.PublicRead));
+        } catch (com.amazonaws.services.s3.model.AmazonS3Exception ex) {
+            // signature does not match (403), invalid access key (403),
+            // access denied (403), no such bucket (404)
+            // do something
+            return false;
+        } catch (com.amazonaws.AmazonClientException ex) { // file path not found
+            // do something
+            return false;
+        } catch (java.io.IOException ex) { // config.properties
+            // do something
+            return false;
+        }
+        return true;
+        */
+    }
+
+    /**
      * serialized representation to use in soap
      */
     public static class serialized implements org.ksoap2.serialization.KvmSerializable {
