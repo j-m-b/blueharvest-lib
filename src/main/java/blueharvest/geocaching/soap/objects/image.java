@@ -139,10 +139,30 @@ public class image extends blueharvest.geocaching.concepts.image {
         }
     }
 
+    /**
+     * <h3>updates an image</h3>
+     * todo: implementation (web service ready and available)
+     *
+     * @param i (i)mage
+     * @return true/false depending on whether the image was updated
+     * @throws java.lang.UnsupportedOperationException
+     * @throws java.lang.UnsupportedOperationException
+     * @since 2015-11-09
+     */
     public static boolean update(image i) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * <h3>deletes an image</h3>
+     * todo: implementation (stored procedure and web service available)
+     *
+     * @param id id of the image
+     * @return true/false depending on whether the image was inserted
+     * @throws java.lang.UnsupportedOperationException
+     * @throws java.lang.UnsupportedOperationException
+     * @since 2015-11-09
+     */
     public static boolean delete(java.util.UUID id) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
