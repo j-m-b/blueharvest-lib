@@ -85,7 +85,28 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
 
     }
 
-    public static class entry {
+    public static class entry extends blueharvest.geocaching.concepts.logbook.entry {
+
+        public entry(java.util.UUID id, java.util.Date date, String title, String text,
+                     blueharvest.geocaching.concepts.user user) {
+            super(id, date, title, text, user);
+        }
+
+        public static entry get(java.util.UUID id) {
+            throw new java.lang.UnsupportedOperationException("Not supported yet.");
+        }
+
+        public static boolean insert(entry e) {
+            throw new java.lang.UnsupportedOperationException("Not supported yet.");
+        }
+
+        public static boolean update(entry e) {
+            throw new java.lang.UnsupportedOperationException("Not supported yet.");
+        }
+
+        public static boolean delete(java.util.UUID id) {
+            throw new java.lang.UnsupportedOperationException("Not supported yet.");
+        }
 
         /**
          * serialized representation to use in soap
