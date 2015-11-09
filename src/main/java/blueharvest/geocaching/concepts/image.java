@@ -1,7 +1,7 @@
 package blueharvest.geocaching.concepts;
 
 /**
- * <h3>image object</h3>
+ * <h3>image</h3>
  *
  * @author jmb
  * @since 2015-10-13
@@ -16,17 +16,17 @@ public abstract class image {
     /**
      * <h3>constructor</h3>
      *
-     * @param id id of this
-     * @param uri where this is located
+     * @param id      id of this
+     * @param uri     where this is located
      * @param caption the caption for this
-     * @param file the file object of this
+     * @param file    the file object of this
      * @see java.util.UUID
      * @see java.net.URI
      * @see java.io.File
      * @since 2015-10-24
      */
     public image(java.util.UUID id, java.net.URI uri, String caption,
-        java.io.File file) {
+                 java.io.File file) {
         this.id = id;
         this.uri = uri;
         this.caption = caption;

@@ -11,7 +11,8 @@ public abstract class role {
 
     /**
      * <h3>constructor</h3>
-     * @param id id of this
+     *
+     * @param id   id of this
      * @param name name of this
      * @since 2015-11-07
      */
@@ -20,8 +21,12 @@ public abstract class role {
         this.name = name;
     }
 
-    public java.util.UUID getId() { return id; }
+    public java.util.UUID getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
 }

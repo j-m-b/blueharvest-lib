@@ -31,10 +31,10 @@ public class user extends blueharvest.geocaching.concepts.user {
      * @since 2015-11-07
      */
     private user(java.util.UUID id, java.util.Date anniversary, String username,
-                String password, java.util.UUID salt, String email, boolean active,
-                boolean locked, blueharvest.geocaching.concepts.location location,
-                blueharvest.geocaching.concepts.image image,
-                blueharvest.geocaching.concepts.role role) {
+                 String password, java.util.UUID salt, String email, boolean active,
+                 boolean locked, blueharvest.geocaching.concepts.location location,
+                 blueharvest.geocaching.concepts.image image,
+                 blueharvest.geocaching.concepts.role role) {
         super(id, anniversary, username, password, salt, email, active, locked,
                 location, image, role);
         request = "";

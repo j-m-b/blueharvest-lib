@@ -11,7 +11,7 @@ public class role extends blueharvest.geocaching.concepts.role {
     }
 
     /**
-     * serialized representation of role to use in soap
+     * serialized representation to use in soap
      */
     public static class serialized implements org.ksoap2.serialization.KvmSerializable {
 

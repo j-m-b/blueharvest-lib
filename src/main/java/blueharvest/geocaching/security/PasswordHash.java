@@ -27,9 +27,12 @@ package blueharvest.geocaching.security;
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 import java.security.SecureRandom;
+
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.SecretKeyFactory;
+
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -57,11 +60,11 @@ public class PasswordHash {
      *
      * @param password the password to hash
      * @return a salted PBKDF2 hash of the password
-     * @throws java.security.NoSuchAlgorithmException exception
+     * @throws java.security.NoSuchAlgorithmException     exception
      * @throws java.security.spec.InvalidKeySpecException exception
      */
     public static String createHash(String password)
-        throws NoSuchAlgorithmException, InvalidKeySpecException {
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
         return createHash(password.toCharArray());
     }
 
@@ -70,11 +73,11 @@ public class PasswordHash {
      *
      * @param password the password to hash
      * @return a salted PBKDF2 hash of the password
-     * @throws java.security.NoSuchAlgorithmException exception
+     * @throws java.security.NoSuchAlgorithmException     exception
      * @throws java.security.spec.InvalidKeySpecException exception
      */
     public static String createHash(char[] password)
-        throws NoSuchAlgorithmException, InvalidKeySpecException {
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
         // Generate a random salt
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[SALT_BYTE_SIZE];
@@ -89,28 +92,28 @@ public class PasswordHash {
     /**
      * Validates a password using a hash.
      *
-     * @param password the password to check
+     * @param password    the password to check
      * @param correctHash the hash of the valid password
      * @return true if the password is correct, false if not
-     * @throws java.security.NoSuchAlgorithmException exception
+     * @throws java.security.NoSuchAlgorithmException     exception
      * @throws java.security.spec.InvalidKeySpecException exception
      */
     public static boolean validatePassword(String password, String correctHash)
-        throws NoSuchAlgorithmException, InvalidKeySpecException {
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
         return validatePassword(password.toCharArray(), correctHash);
     }
 
     /**
      * Validates a password using a hash.
      *
-     * @param password the password to check
+     * @param password    the password to check
      * @param correctHash the hash of the valid password
      * @return true if the password is correct, false if not
-     * @throws java.security.NoSuchAlgorithmException exception
+     * @throws java.security.NoSuchAlgorithmException     exception
      * @throws java.security.spec.InvalidKeySpecException exception
      */
     public static boolean validatePassword(char[] password, String correctHash)
-        throws NoSuchAlgorithmException, InvalidKeySpecException {
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
         // Decode the hash into its parameters
         String[] params = correctHash.split(":");
         int iterations = Integer.parseInt(params[ITERATION_INDEX]);
@@ -144,14 +147,14 @@ public class PasswordHash {
     /**
      * Computes the PBKDF2 hash of a password.
      *
-     * @param password the password to hash.
-     * @param salt the salt
+     * @param password   the password to hash.
+     * @param salt       the salt
      * @param iterations the iteration count (slowness factor)
-     * @param bytes the length of the hash to compute in bytes
+     * @param bytes      the length of the hash to compute in bytes
      * @return the PBDKF2 hash of the password
      */
     private static byte[] pbkdf2(char[] password, byte[] salt, int iterations, int bytes)
-        throws NoSuchAlgorithmException, InvalidKeySpecException {
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
         PBEKeySpec spec = new PBEKeySpec(password, salt, iterations, bytes * 8);
         SecretKeyFactory skf = SecretKeyFactory.getInstance(PBKDF2_ALGORITHM);
         return skf.generateSecret(spec).getEncoded();

@@ -37,4 +37,82 @@ public class address extends blueharvest.geocaching.concepts.address {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * serialized representation to use in soap
+     */
+    public static class serialized implements org.ksoap2.serialization.KvmSerializable {
+
+        public String street;
+        public String city;
+        public String region;
+        public String postalcode;
+
+        public serialized() {
+        }
+
+        @Override
+        public Object getProperty(int i) {
+            switch (i) {
+                case 0:
+                    return street;
+                case 1:
+                    return city;
+                case 2:
+                    return region;
+                case 3:
+                    return postalcode;
+            }
+            return null;
+        }
+
+        @Override
+        public int getPropertyCount() {
+            return 4;
+        }
+
+        @Override
+        public void setProperty(int i, Object o) {
+            switch (i) {
+                case 0:
+                    street = o.toString();
+                    break;
+                case 1:
+                    city = o.toString();
+                    break;
+                case 2:
+                    region = o.toString();
+                    break;
+                case 3:
+                    postalcode = o.toString();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        @Override
+        public void getPropertyInfo(int i, java.util.Hashtable hashtable,
+                                    org.ksoap2.serialization.PropertyInfo propertyInfo) {
+            switch (i) {
+                case 0:
+                    propertyInfo.type = org.ksoap2.serialization.PropertyInfo.STRING_CLASS;
+                    propertyInfo.name = "street";
+                    break;
+                case 1:
+                    propertyInfo.type = org.ksoap2.serialization.PropertyInfo.STRING_CLASS;
+                    propertyInfo.name = "city";
+                    break;
+                case 2:
+                    propertyInfo.type = org.ksoap2.serialization.PropertyInfo.STRING_CLASS;
+                    propertyInfo.name = "region";
+                    break;
+                case 3:
+                    propertyInfo.type = org.ksoap2.serialization.PropertyInfo.STRING_CLASS;
+                    propertyInfo.name = "postalcode";
+                    break;
+            }
+        }
+
+    }
+
 }

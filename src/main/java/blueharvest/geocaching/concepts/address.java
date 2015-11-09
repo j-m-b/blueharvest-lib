@@ -1,7 +1,6 @@
 package blueharvest.geocaching.concepts;
 
 /**
- *
  * @author jmb
  * @since 2015-10-13
  */
@@ -15,9 +14,9 @@ public abstract class address {
     /**
      * <h3>address constructor</h3>
      *
-     * @param street the street of the address
-     * @param city the city of the address
-     * @param region the region of the address
+     * @param street     the street of the address
+     * @param city       the city of the address
+     * @param region     the region of the address
      * @param postalcode the postal code of the address
      * @since 2015-10-13
      */
@@ -52,7 +51,7 @@ public abstract class address {
         /**
          * <h3>region constructor</h3>
          *
-         * @param name the name of the region
+         * @param name         the name of the region
          * @param abbreviation the abbreviation of the region
          */
         public region(String name, String abbreviation) {

@@ -24,19 +24,19 @@ public abstract class geocache {
      * <h3>constructor</h3>
      * instantiates this
      *
-     * @param id identifier
+     * @param id          identifier
      * @param anniversary date which this was created
-     * @param name the name of this
+     * @param name        the name of this
      * @param description the description of this
-     * @param difficulty how difficult this is
-     * @param size the size of this
-     * @param terrain the terrain of this
-     * @param status the status of this
-     * @param type the type this is
-     * @param creator the user that created this
-     * @param images the images associated with this
-     * @param location the location of this
-     * @param logbook the logbook associated with this
+     * @param difficulty  how difficult this is
+     * @param size        the size of this
+     * @param terrain     the terrain of this
+     * @param status      the status of this
+     * @param type        the type this is
+     * @param creator     the user that created this
+     * @param images      the images associated with this
+     * @param location    the location of this
+     * @param logbook     the logbook associated with this
      * @see blueharvest.geocaching.concepts.user
      * @see blueharvest.geocaching.concepts.image
      * @see blueharvest.geocaching.concepts.location
@@ -44,9 +44,9 @@ public abstract class geocache {
      * @since 2015-11
      */
     public geocache(java.util.UUID id, java.util.Date anniversary, String name,
-        String description, int difficulty, int size, int terrain, int status,
-        int type, user creator, java.util.ArrayList<image> images,
-        location location, logbook logbook) {
+                    String description, int difficulty, int size, int terrain, int status,
+                    int type, user creator, java.util.ArrayList<image> images,
+                    location location, logbook logbook) {
         this.id = id;
         this.anniversary = anniversary;
         this.name = name;

@@ -39,4 +39,101 @@ public class location extends blueharvest.geocaching.concepts.location {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * serialized representation to use in soap
+     */
+    public static class serialized implements org.ksoap2.serialization.KvmSerializable {
+
+        public java.util.UUID id; // this could be a problem
+        public String name;
+        public double latitude;
+        public double longitude;
+        public int altitude;
+        public blueharvest.geocaching.soap.objects.address.serialized address;
+
+        public serialized() {
+        }
+
+        @Override
+        public Object getProperty(int i) {
+            switch (i) {
+                case 0:
+                    return id;
+                case 1:
+                    return name;
+                case 2:
+                    return latitude;
+                case 3:
+                    return longitude;
+                case 4:
+                    return altitude;
+                case 5:
+                    return address;
+            }
+            return null;
+        }
+
+        @Override
+        public int getPropertyCount() {
+            return 6;
+        }
+
+        @Override
+        public void setProperty(int i, Object o) {
+            switch (i) {
+                case 0:
+                    id = java.util.UUID.fromString(o.toString());
+                    break;
+                case 1:
+                    name = o.toString();
+                    break;
+                case 2:
+                    latitude = (double) o;
+                    break;
+                case 3:
+                    longitude = (double) o;
+                    break;
+                case 4:
+                    altitude = (int) o;
+                    break;
+                case 5:
+                    address = (blueharvest.geocaching.soap.objects.address.serialized) o;
+                default:
+                    break;
+            }
+        }
+
+        @Override
+        public void getPropertyInfo(int i, java.util.Hashtable hashtable,
+                                    org.ksoap2.serialization.PropertyInfo propertyInfo) {
+            switch (i) {
+                case 0:
+                    propertyInfo.type = org.ksoap2.serialization.PropertyInfo.STRING_CLASS;
+                    propertyInfo.name = "id";
+                    break;
+                case 1:
+                    propertyInfo.type = org.ksoap2.serialization.PropertyInfo.STRING_CLASS;
+                    propertyInfo.name = "name";
+                    break;
+                case 2:
+                    propertyInfo.type = double.class; //org.ksoap2.serialization.PropertyInfo.STRING_CLASS;
+                    propertyInfo.name = "latitude";
+                    break;
+                case 3:
+                    propertyInfo.type = double.class; //org.ksoap2.serialization.PropertyInfo.STRING_CLASS;
+                    propertyInfo.name = "longitude";
+                    break;
+                case 4:
+                    propertyInfo.type = org.ksoap2.serialization.PropertyInfo.INTEGER_CLASS;
+                    propertyInfo.name = "altitude";
+                    break;
+                case 5:
+                    propertyInfo.type = org.ksoap2.serialization.PropertyInfo.OBJECT_CLASS;
+                    propertyInfo.name = "address";
+                    break;
+            }
+        }
+
+    }
+
 }

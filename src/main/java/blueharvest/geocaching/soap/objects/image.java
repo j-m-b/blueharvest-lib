@@ -21,6 +21,7 @@ public class image extends blueharvest.geocaching.concepts.image {
     public image(java.util.UUID id, java.net.URI uri, String caption, java.io.File file) {
         super(id, uri, caption, file);
     }
+
     public static image get(java.util.UUID id) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
@@ -35,6 +36,74 @@ public class image extends blueharvest.geocaching.concepts.image {
 
     public static boolean delete(java.util.UUID id) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * serialized representation to use in soap
+     */
+    public static class serialized implements org.ksoap2.serialization.KvmSerializable {
+
+        public java.util.UUID id; // this could be a problem
+        public java.net.URI uri;  // this could be a problem, too
+        public String caption;
+
+        public serialized() {
+        }
+
+        @Override
+        public Object getProperty(int i) {
+            switch (i) {
+                case 0:
+                    return id;
+                case 1:
+                    return uri;
+                case 2:
+                    return caption;
+            }
+            return null;
+        }
+
+        @Override
+        public int getPropertyCount() {
+            return 3;
+        }
+
+        @Override
+        public void setProperty(int i, Object o) {
+            switch (i) {
+                case 0:
+                    id = java.util.UUID.fromString(o.toString());
+                    break;
+                case 1:
+                    uri = java.net.URI.create(o.toString());
+                    break;
+                case 2:
+                    caption = o.toString();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        @Override
+        public void getPropertyInfo(int i, java.util.Hashtable hashtable,
+                                    org.ksoap2.serialization.PropertyInfo propertyInfo) {
+            switch (i) {
+                case 0:
+                    propertyInfo.type = org.ksoap2.serialization.PropertyInfo.STRING_CLASS;
+                    propertyInfo.name = "id";
+                    break;
+                case 1:
+                    propertyInfo.type = org.ksoap2.serialization.PropertyInfo.STRING_CLASS;
+                    propertyInfo.name = "uri";
+                    break;
+                case 2:
+                    propertyInfo.type = org.ksoap2.serialization.PropertyInfo.STRING_CLASS;
+                    propertyInfo.name = "caption";
+                    break;
+            }
+        }
+
     }
 
 }
