@@ -6,15 +6,55 @@ package blueharvest.geocaching.soap.objects;
  */
 public class logbook extends blueharvest.geocaching.concepts.logbook {
 
-    public logbook(java.util.UUID id,
+    private final static String url = "https://blueharvestgeo.com/WebServices/LogbookService.asmx";
+
+    private String request;
+    private String response;
+
+    /**
+     * <h3>constructor</h3>
+     *
+     * @param id      id
+     * @param date    create date
+     * @param entries entries in the logbook
+     * @see blueharvest.geocaching.concepts.logbook.entry
+     * @since 2015-11-09
+     */
+    public logbook(java.util.UUID id, java.util.Date date,
                    java.util.ArrayList<blueharvest.geocaching.concepts.logbook.entry> entries) {
-        super(id, entries);
+        super(id, date, entries);
+        this.request = "";
+        this.response = "";
+    }
+
+    public void setRequest(String value) {
+        request = value;
+    }
+
+    public void setResponse(String value) {
+        response = value;
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public String getRequest() {
+        return request;
     }
 
     public static logbook get(java.util.UUID id) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * <h3>inserts a logbook</h3>
+     * id and date default
+     *
+     * @param l (l)ogbook
+     * @return true/false depending on whether the logbook was inserted
+     * @since 2015-11-09
+     */
     public static boolean insert(logbook l) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
@@ -87,9 +127,20 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
 
     public static class entry extends blueharvest.geocaching.concepts.logbook.entry {
 
+        /**
+         * <h3>constructor</h3>
+         *
+         * @param id     id
+         * @param date   create/entry date
+         * @param title  title
+         * @param text   text
+         * @param author author of the logbook entry
+         * @see blueharvest.geocaching.concepts.user
+         * @since 2015-11-09
+         */
         public entry(java.util.UUID id, java.util.Date date, String title, String text,
-                     blueharvest.geocaching.concepts.user user) {
-            super(id, date, title, text, user);
+                     blueharvest.geocaching.concepts.user author) {
+            super(id, date, title, text, author);
         }
 
         public static entry get(java.util.UUID id) {
@@ -117,7 +168,7 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
             public java.util.Date date; // this could be a problem, too
             public String title;
             public String text;
-            public blueharvest.geocaching.soap.objects.user.serialized user;
+            public blueharvest.geocaching.soap.objects.user.serialized author;
 
             public serialized() {
             }
@@ -134,7 +185,7 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
                     case 3:
                         return text;
                     case 4:
-                        return user;
+                        return author;
                 }
                 return null;
             }
@@ -166,7 +217,7 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
                         text = o.toString();
                         break;
                     case 4:
-                        user = (blueharvest.geocaching.soap.objects.user.serialized) o;
+                        author = (blueharvest.geocaching.soap.objects.user.serialized) o;
                         break;
                     default:
                         break;
@@ -195,7 +246,7 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
                         break;
                     case 4:
                         propertyInfo.type = org.ksoap2.serialization.PropertyInfo.OBJECT_CLASS;
-                        propertyInfo.name = "user";
+                        propertyInfo.name = "author";
                         break;
                 }
             }
