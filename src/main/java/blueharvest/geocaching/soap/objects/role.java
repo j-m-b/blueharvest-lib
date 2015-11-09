@@ -10,9 +10,12 @@ public class role extends blueharvest.geocaching.concepts.role {
         super(id, name);
     }
 
+    /**
+     * serialized representation of role to use in soap
+     */
     public static class serialized implements org.ksoap2.serialization.KvmSerializable {
 
-        public java.util.UUID id;
+        public java.util.UUID id; // this could be a problem
         public String name;
 
         public serialized() {

@@ -30,7 +30,7 @@ public class user extends blueharvest.geocaching.concepts.user {
      * @see blueharvest.geocaching.concepts.role
      * @since 2015-11-07
      */
-    public user(java.util.UUID id, java.util.Date anniversary, String username,
+    private user(java.util.UUID id, java.util.Date anniversary, String username,
                 String password, java.util.UUID salt, String email, boolean active,
                 boolean locked, blueharvest.geocaching.concepts.location location,
                 blueharvest.geocaching.concepts.image image,
@@ -279,7 +279,6 @@ public class user extends blueharvest.geocaching.concepts.user {
     /**
      * <h3>authorizes a user</h3>
      * authorization for a user by username and password
-     * todo: implementation
      *
      * @param username unique username of the user
      * @param password password (plain text) of the user
