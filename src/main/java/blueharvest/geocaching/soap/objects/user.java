@@ -200,7 +200,6 @@ public class user extends blueharvest.geocaching.concepts.user {
         } catch (java.lang.Exception ex) {
             throw new RuntimeException("exception:" + ex.getLocalizedMessage() + " ... " + transport.requestDump);
         }
-        //throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
     /**
