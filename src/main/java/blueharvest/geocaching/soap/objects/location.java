@@ -81,8 +81,45 @@ public class location extends blueharvest.geocaching.concepts.location {
         return l;
     }
 
+    /**
+     * <h3>gets a location</h3>
+     *
+     * @param latitude  in decimal degrees
+     * @param longitude in decimal degrees
+     * @return location
+     * @see <a href="https://blueharvestgeo.com/WebServices/LocationService.asmx?op=GetLocationByCoordinates">
+     * GetLocationByCoordinates</a>
+     * @since 2015-11-09
+     */
     public static location get(double latitude, double longitude) {
-        throw new java.lang.UnsupportedOperationException("Houston, we have a problem!");
+        location l;
+        org.ksoap2.serialization.SoapObject request
+                = new blueharvest.geocaching.soap.request("GetLocationByCoordinates");
+        // parameters
+        request.addProperty("latitude", latitude);
+        request.addProperty("longitude", longitude);
+        org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                = new blueharvest.geocaching.soap.envelope();
+        // marshal double
+        // http://seesharpgears.blogspot.com/2010/11/implementing-ksoap-marshal-interface.html
+        blueharvest.geocaching.soap.objects.marshals.MarshalDouble md
+                = new blueharvest.geocaching.soap.objects.marshals.MarshalDouble();
+        md.register(envelope);
+        envelope.setOutputSoapObject(request);
+        org.ksoap2.transport.HttpTransportSE transport
+                = new org.ksoap2.transport.HttpTransportSE(url);
+        try {
+            transport.call("http://blueharvestgeo.com/webservices/GetLocationByCoordinates", envelope);
+            org.ksoap2.serialization.SoapObject response
+                    = (org.ksoap2.serialization.SoapObject) envelope.getResponse();
+            l = new location(java.util.UUID.fromString(response.getProperty("id").toString()), null,
+                    Double.parseDouble(response.getProperty("latitude").toString()),
+                    Double.parseDouble(response.getProperty("longitude").toString()),
+                    Integer.parseInt(response.getProperty("altitude").toString()), null);
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+        return l;
     }
 
     /**
