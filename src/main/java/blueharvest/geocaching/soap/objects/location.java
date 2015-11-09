@@ -83,6 +83,7 @@ public class location extends blueharvest.geocaching.concepts.location {
 
     /**
      * <h3>gets a location</h3>
+     * todo: address
      *
      * @param latitude  in decimal degrees
      * @param longitude in decimal degrees
@@ -116,6 +117,7 @@ public class location extends blueharvest.geocaching.concepts.location {
                     Double.parseDouble(response.getProperty("latitude").toString()),
                     Double.parseDouble(response.getProperty("longitude").toString()),
                     Integer.parseInt(response.getProperty("altitude").toString()), null);
+            // todo: address
         } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
             throw new RuntimeException(ex.getMessage());
         }
@@ -184,6 +186,18 @@ public class location extends blueharvest.geocaching.concepts.location {
         }
     }
 
+    /**
+     * <h3>updates a location</h3>
+     * todo: implementation (web service ready and available)
+     *
+     * @param l (l)ocation
+     * @return true/false depending on whether the update was successful
+     * @throws java.lang.UnsupportedOperationException
+     * @throws java.lang.UnsupportedOperationException
+     * @see <a href="https://blueharvestgeo.com/WebServices/LocationService.asmx?op=UpdateLocation">
+     * UpdateLocation</a>
+     * @since 2015-11-09
+     */
     public static boolean update(location l) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
