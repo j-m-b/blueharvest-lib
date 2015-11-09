@@ -176,6 +176,9 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
 
     public static class entry extends blueharvest.geocaching.concepts.logbook.entry {
 
+        private String request;
+        private String response;
+
         /**
          * <h3>constructor</h3>
          *
@@ -192,12 +195,81 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
             super(id, date, title, text, author);
         }
 
+        public void setRequest(String value) {
+            request = value;
+        }
+
+        public void setResponse(String value) {
+            response = value;
+        }
+
+        public String getRequest() {
+            return request;
+        }
+
+        public String getResponse() {
+            return response;
+        }
+
         public static entry get(java.util.UUID id) {
             throw new java.lang.UnsupportedOperationException("Not supported yet.");
         }
 
-        public static boolean insert(entry e) {
-            throw new java.lang.UnsupportedOperationException("Not supported yet.");
+        /**
+         * <h3>inserts a logbook entry</h3>
+         * required: title, text, user.id, and logbookid<br />
+         * this may not be necessary ...
+         * todo: test with logbook
+         *
+         * @param e         (e)ntry
+         * @param logbookid id og the logbook for which this belongs to
+         * @return true/false depending on success of insert
+         * @see <a href="https://blueharvestgeo.com/WebServices/LogbookService.asmx?op=InsertLogbookEntry">
+         * InsertLogbookEntry</a>
+         * @since 2015-11-09
+         */
+        public static boolean insert(entry e, java.util.UUID logbookid) {
+            org.ksoap2.serialization.SoapObject request
+                    = new blueharvest.geocaching.soap.request("InsertLogbookEntry");
+            final String ns = "http://blueharvestgeo.com/webservices/";
+            org.ksoap2.serialization.SoapObject entry
+                    = new org.ksoap2.serialization.SoapObject(ns, "entry");
+            entry.addProperty("title", e.getTitle());
+            entry.addProperty("text", e.getText());
+            request.addSoapObject(entry);
+            request.addProperty("userid", e.getAuthor().getId().toString());
+            request.addProperty("logbookid", logbookid.toString());
+            org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                    = new blueharvest.geocaching.soap.envelope();
+            envelope.implicitTypes = true;
+            envelope.setAddAdornments(false); // prefixing
+            envelope.setOutputSoapObject(request);
+            org.ksoap2.transport.HttpTransportSE transport
+                    = new org.ksoap2.transport.HttpTransportSE(url);
+            transport.debug = true; // testing
+            try {
+                transport.call("http://blueharvestgeo.com/webservices/InsertLogbookEntry", envelope);
+                org.ksoap2.serialization.SoapPrimitive response
+                        = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
+                e.setRequest(transport.requestDump); // testing
+                e.setResponse(transport.responseDump); // testing
+                return Boolean.parseBoolean(response.toString());
+            } catch (org.ksoap2.SoapFault ex) {
+                throw new RuntimeException(
+                        "soap fault:" + ex.getMessage() + " ... " + transport.requestDump);
+            } catch (org.ksoap2.transport.HttpResponseException ex) {
+                throw new RuntimeException(
+                        "http response exception:" + ex.getMessage() + " ... " + transport.requestDump);
+            } catch (java.io.IOException ex) {
+                throw new RuntimeException(
+                        "io exception:" + ex.getMessage() + " ... " + transport.requestDump);
+            } catch (org.xmlpull.v1.XmlPullParserException ex) {
+                throw new RuntimeException(
+                        "xml pull parser exception:" + ex.getMessage() + " ... " + transport.requestDump);
+            } catch (java.lang.Exception ex) {
+                throw new RuntimeException(
+                        "exception:" + ex.getLocalizedMessage() + " ... " + transport.requestDump);
+            }
         }
 
         public static boolean update(entry e) {
