@@ -51,14 +51,63 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
      * <h3>inserts a logbook</h3>
      * id and date default
      *
-     * @param l (l)ogbook
      * @return true/false depending on whether the logbook was inserted
+     * @see <a href="https://blueharvestgeo.com/WebServices/LogbookService.asmx?op=InsertLogbook">
+     * InsertLogbook</a>
      * @since 2015-11-09
+     * @deprecated no replacement, a logbook is inserted with a geocache
      */
-    public static boolean insert(logbook l) {
-        throw new java.lang.UnsupportedOperationException("Not supported yet.");
+    public static boolean insert() {
+        org.ksoap2.serialization.SoapObject request
+                = new blueharvest.geocaching.soap.request("InsertLogbook");
+        final String ns = "http://blueharvestgeo.com/webservices/";
+        org.ksoap2.serialization.SoapObject image
+                = new org.ksoap2.serialization.SoapObject(ns, "i");
+        request.addSoapObject(image);
+
+        org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                = new blueharvest.geocaching.soap.envelope();
+        envelope.implicitTypes = true;
+        envelope.setAddAdornments(false); // prefixing
+        envelope.setOutputSoapObject(request);
+        org.ksoap2.transport.HttpTransportSE transport
+                = new org.ksoap2.transport.HttpTransportSE(url); // ?wsdl
+        transport.debug = true; // testing
+        try {
+            transport.call("http://blueharvestgeo.com/webservices/InsertLogbook", envelope);
+            org.ksoap2.serialization.SoapPrimitive response
+                    = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
+            //l.setRequest(transport.requestDump); // testing
+            //l.setResponse(transport.responseDump); // testing
+            return Boolean.parseBoolean(response.toString());
+        } catch (org.ksoap2.SoapFault ex) {
+            throw new RuntimeException(
+                    "soap fault:" + ex.getMessage() + " ... " + transport.requestDump);
+        } catch (org.ksoap2.transport.HttpResponseException ex) {
+            throw new RuntimeException(
+                    "http response exception:" + ex.getMessage() + " ... " + transport.requestDump);
+        } catch (java.io.IOException ex) {
+            throw new RuntimeException(
+                    "io exception:" + ex.getMessage() + " ... " + transport.requestDump);
+        } catch (org.xmlpull.v1.XmlPullParserException ex) {
+            throw new RuntimeException(
+                    "xml pull parser exception:" + ex.getMessage() + " ... " + transport.requestDump);
+        } catch (java.lang.Exception ex) {
+            throw new RuntimeException(
+                    "exception:" + ex.getLocalizedMessage() + " ... " + transport.requestDump);
+        }
     }
 
+    /**
+     * <h3>updates a logbook</h3>
+     *
+     * @param l (l)ogbook
+     * @return true/false depending on whether the update was successful
+     * @throws java.lang.UnsupportedOperationException
+     * @throws java.lang.UnsupportedOperationException
+     * @since 2015-11-09
+     * @deprecated no replacement, there is nothing to update
+     */
     public static boolean update(logbook l) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
