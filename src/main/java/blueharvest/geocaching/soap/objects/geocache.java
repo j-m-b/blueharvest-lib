@@ -46,22 +46,6 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
         this.response = "";
     }
 
-    public void setRequest(String value) {
-        request = value;
-    }
-
-    public void setResponse(String value) {
-        response = value;
-    }
-
-    public String getResponse() {
-        return response;
-    }
-
-    public String getRequest() {
-        return request;
-    }
-
     public static geocache get(java.util.UUID id) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
@@ -172,6 +156,173 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
 
     public static boolean delete(java.util.UUID id) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String value) {
+        response = value;
+    }
+
+    public String getRequest() {
+        return request;
+    }
+
+    public void setRequest(String value) {
+        request = value;
+    }
+
+    public static class geocaches extends java.util.ArrayList<geocache> {
+
+        /**
+         * <h3>constructor</h3>
+         * gets geocaches within a radius of center coordinates<br />
+         * the following are null/empty:
+         * <ul>
+         * <li>geocache.user.anniversary - null</li>
+         * <li>geocache.user.password - null/empty (intentionally)</li>
+         * <li>geocache.user.salt - null/empty (intentionally)</li>
+         * <li>geocache.user.active - true</li>
+         * <li>geocache.user.locked - false</li>
+         * <li>geocache.user.image - null</li>
+         * <li>geocache.user.location - null</li>
+         * <li>geocache.images - null (todo)</li>
+         * <li>geocache.location.name - empty</li>
+         * <li>geocache.location.address - null</li>
+         * <li>geocache.logbook.entries - null (todo)</li>
+         * </ul>
+         *
+         * @param minlatrad minimum latitude in radians
+         * @param maxlatrad maximum latitude in radians
+         * @param minlngrad minimum longitude in radians
+         * @param maxlngrad maximum longitude in radians
+         * @param latrad    center latitude in radians
+         * @param lngrad    center longitude in radians
+         * @param distance  measurement from center coordinates
+         * @return a list of geocaches within the distance from the center
+         * coordinates
+         * @see <a href="http://JanMatuschek.de/LatitudeLongitudeBoundingCoordinates#Java">
+         * http://JanMatuschek.de/LatitudeLongitudeBoundingCoordinates#Java</a>
+         * @see <a href="https://blueharvestgeo.com/WebServices/GeocacheService.asmx?op=GetGeocachesWithinDistance">
+         * GetGeocachesWithinDistance</a>
+         * @see blueharvest.geocaching.util.GeoLocation
+         * @since 2015-11-02
+         */
+        public geocaches(double minlatrad, double maxlatrad, double minlngrad, double maxlngrad,
+                         double latrad, double lngrad, double distance) {
+            org.ksoap2.serialization.SoapObject request
+                    = new blueharvest.geocaching.soap.request("GetGeocachesWithinDistance");
+            // parameters
+            request.addProperty("minlatrad", minlatrad);
+            request.addProperty("maxlatrad", maxlatrad);
+            request.addProperty("minlngrad", minlngrad);
+            request.addProperty("maxlngrad", maxlngrad);
+            request.addProperty("latrad", latrad);
+            request.addProperty("lngrad", lngrad);
+            request.addProperty("distance", distance);
+            org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                    = new blueharvest.geocaching.soap.envelope();
+            // marshal double
+            // http://seesharpgears.blogspot.com/2010/11/implementing-ksoap-marshal-interface.html
+            blueharvest.geocaching.soap.objects.marshals.MarshalDouble md
+                    = new blueharvest.geocaching.soap.objects.marshals.MarshalDouble();
+            md.register(envelope);
+            envelope.implicitTypes = true;
+            envelope.setAddAdornments(false); // prefixing
+            envelope.setOutputSoapObject(request);
+            org.ksoap2.transport.HttpTransportSE transport
+                    = new org.ksoap2.transport.HttpTransportSE(url);
+            //transport.debug = true; // testing
+            try {
+                transport.call("http://blueharvestgeo.com/webservices/GetGeocachesWithinDistance",
+                        envelope);
+                //http://stackoverflow.com/questions/11029205/ksoap2-android-receive-array-of-objects
+                org.ksoap2.serialization.SoapObject response
+                        = (org.ksoap2.serialization.SoapObject) envelope.getResponse();
+                //this.request = transport.requestDump; // testing
+                //this.response = transport.responseDump; // testing
+                for (int i = 0; i < response.getPropertyCount(); i++) {
+                    org.ksoap2.serialization.SoapObject child
+                            = (org.ksoap2.serialization.SoapObject) response.getProperty(i);
+                    java.util.UUID id
+                            = java.util.UUID.fromString(child.getProperty("id").toString());
+                    java.util.Date anniversary = null;
+                    try {
+                        anniversary = new java.text.SimpleDateFormat(
+                                "yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US).parse(
+                                child.getProperty("anniversary").toString());
+                    } catch (java.text.ParseException e) {
+                        e.printStackTrace();
+                    }
+                    String name = child.getProperty("name").toString();
+                    String description = child.getProperty("description").toString();
+                    int difficulty = Integer.parseInt(child.getProperty("difficulty").toString());
+                    int terrain = Integer.parseInt(child.getProperty("terrain").toString());
+                    int size = Integer.parseInt(child.getProperty("size").toString());
+                    int status = Integer.parseInt(child.getProperty("status").toString());
+                    int type = Integer.parseInt(child.getProperty("type").toString());
+                    add(new geocache(id, anniversary, name, description, difficulty, size,
+                            terrain, status, type,
+                            getUser((org.ksoap2.serialization.SoapObject) child.getProperty("user")),
+                            null, // images
+                            getLocation((org.ksoap2.serialization.SoapObject) child.getProperty("location")),
+                            getLogbook((org.ksoap2.serialization.SoapObject) child.getProperty("logbook"))));
+                    // no longer used but are available
+                    /*java.util.UUID userid = java.util.UUID.fromString(
+                            child.getProperty("userid").toString()); // (n/a)*/
+                    /*java.util.UUID locationid
+                            = java.util.UUID.fromString(child.getProperty("locationid").toString()); // (n/a)*/
+                    /*java.util.UUID logbookid
+                            = java.util.UUID.fromString(child.getProperty("logbookid").toString()); // (n/a)*/
+                }
+            } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
+                throw new RuntimeException(ex.getMessage());
+            }
+        }
+
+        private user getUser(org.ksoap2.serialization.SoapObject child) {
+            java.util.UUID id = java.util.UUID.fromString(child.getProperty("id").toString());
+            java.util.Date anniversary = null;
+            try {
+                anniversary = new java.text.SimpleDateFormat(
+                        "yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US).parse(
+                        child.getProperty("anniversary").toString());
+            } catch (java.text.ParseException e) {
+                e.printStackTrace();
+            }
+            String username = child.getProperty("username").toString();
+            java.util.UUID salt = java.util.UUID.fromString(child.getProperty("salt").toString());
+            String email = child.getProperty("email").toString();
+            boolean active = Boolean.parseBoolean(child.getProperty("active").toString());
+            boolean locked = Boolean.parseBoolean(child.getProperty("locked").toString());
+            boolean empty = Boolean.parseBoolean(child.getProperty("empty").toString());
+            return new blueharvest.geocaching.soap.objects.user(
+                    id, anniversary, username, null, salt, email, active, locked, null, null, null);
+        }
+
+        private location getLocation(org.ksoap2.serialization.SoapObject child) {
+            java.util.UUID id = java.util.UUID.fromString(child.getProperty("id").toString());
+            double latitude = Double.parseDouble(child.getProperty("latitude").toString());
+            double longitude = Double.parseDouble(child.getProperty("longitude").toString());
+            int altitude = Integer.parseInt(child.getProperty("altitude").toString());
+            return new location(id, null, latitude, longitude, altitude, null);
+        }
+
+        private logbook getLogbook(org.ksoap2.serialization.SoapObject child) {
+            java.util.UUID id = java.util.UUID.fromString(child.getProperty("id").toString());
+            java.util.Date datetime = null;
+            try {
+                datetime = new java.text.SimpleDateFormat(
+                        "yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US).parse(
+                        child.getProperty("datetime").toString());
+            } catch (java.text.ParseException e) {
+                e.printStackTrace();
+            }
+            return new logbook(id, datetime, null);
+        }
+
     }
 
     /**
