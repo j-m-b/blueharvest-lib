@@ -6,6 +6,11 @@ package blueharvest.geocaching.soap.objects;
  */
 public class geocache extends blueharvest.geocaching.concepts.geocache {
 
+    private final static String url = "https://blueharvestgeo.com/WebServices/GeocacheService.asmx";
+
+    private String request;
+    private String response;
+
     /**
      * <h3>constructor</h3>
      * instantiates this
@@ -37,15 +42,128 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                     blueharvest.geocaching.concepts.logbook logbook) {
         super(id, anniversary, name, description, difficulty, size,
                 terrain, status, type, creator, images, location, logbook);
+        this.request = "";
+        this.response = "";
+    }
+
+    public void setRequest(String value) {
+        request = value;
+    }
+
+    public void setResponse(String value) {
+        response = value;
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public String getRequest() {
+        return request;
     }
 
     public static geocache get(java.util.UUID id) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * <h3>inserts a geocache</h3>
+     * required: name, description, difficulty, terrain, size, status, type, user.id,
+     * location.latitude, location.longitude, location.altitude req'd;
+     * if the location exists by coordinates, then the location will be set to the existing
+     * location; otherwise, the location is, too, inserted; the logbook is inserted as well
+     *
+     * @param g (g)eocache
+     * @return true/false depending on success of insert
+     * @see <a href="https://blueharvestgeo.com/WebServices/GeocacheService.asmx?op=InsertGeocache">
+     * InsertGeocache</a>
+     * @since 2015-11-09
+     */
     public static boolean insert(geocache g) {
-        return false;
-        //throw new java.lang.UnsupportedOperationException("Not supported yet.");
+        org.ksoap2.serialization.SoapObject request
+                = new blueharvest.geocaching.soap.request("InsertGeocache");
+        final String ns = "http://blueharvestgeo.com/webservices/";
+        // parameters
+        org.ksoap2.serialization.SoapObject geocache
+                = new org.ksoap2.serialization.SoapObject(ns, "g"); // <g>
+        //geocache.addProperty("id", null); // <id>guid</id> (default)
+        //geocache.addProperty("anniversary", null); // <anniversary>dateTime</anniversary> (default)
+        geocache.addProperty("name", g.getName()); // <name>string</name>
+        geocache.addProperty("description", g.getDescription()); // <description>string</description>
+        geocache.addProperty("difficulty", g.getDifficulty()); // <difficulty>int</difficulty>
+        geocache.addProperty("terrain", g.getTerrain()); // <terrain>int</terrain>
+        geocache.addProperty("size", g.getSize()); // <size>int</size>
+        geocache.addProperty("status", g.getStatus()); // <status>int</status>
+        geocache.addProperty("type", g.getType()); // <type>int</type>
+        //geocache.addProperty("userid", null); // <userid>guid</userid> (n/a)
+        /*****************user******************/
+        org.ksoap2.serialization.SoapObject user
+                = new org.ksoap2.serialization.SoapObject(ns, "user"); // <user>
+        user.addProperty("id", g.getCreator().getId().toString()); // <id>guid</id>
+        //user.addProperty("anniversary", g.getCreator().getAnniversary()); // <anniversary>dateTime</anniversary> (n/a)
+        //user.addProperty("username", g.getCreator().getUsername()); // <username>string</username> (n/a)
+        //user.addProperty("password", g.getCreator().getPassword()); // <password>string</password> (n/a)
+        //user.addProperty("salt", g.getCreator().getSalt().toString()); // <salt>guid</salt> (n/a)
+        //user.addProperty("email", g.getCreator().getEmail()); // <email>string</email> (n/a)
+        //user.addProperty("active", g.getCreator().isActive()); // <active>boolean</active> (n/a)
+        //user.addProperty("locked", g.getCreator().isLocked()); // <locked>boolean</locked> (n/a)
+        /*****************role******************/
+        /*org.ksoap2.serialization.SoapObject role
+                = new org.ksoap2.serialization.SoapObject(ns, "role"); // <role>
+        role.addProperty("id", g.getCreator().getRole().getId().toString()); // <id>guid</id>
+        role.addProperty("name", g.getCreator().getRole().getName()); // <name>string</name>
+        user.addSoapObject(role); // </role> (n/a)*/
+        //user.addProperty("empty", null); // <empty>boolean</empty> (n/a)
+        geocache.addSoapObject(user); // </user>
+        //geocache.addProperty("locationid", null); // <locationid>guid</locationid> (n/a)
+        /***************location****************/
+        org.ksoap2.serialization.SoapObject location
+                = new org.ksoap2.serialization.SoapObject(ns, "location"); // <location>
+        //location.addProperty("id", g.getLocation().getId()); // <id>guid</id> (n/a)
+        location.addProperty("latitude", g.getLocation().getLatitude().getDecimalDegrees()); // <latitude>double</latitude>
+        location.addProperty("longitude", g.getLocation().getLongitude().getDecimalDegrees()); // <longitude>double</longitude>
+        location.addProperty("altitude", g.getLocation().getAltitude()); // <altitude>int</altitude>
+        geocache.addSoapObject(location); // </location>
+        //geocache.addProperty("logbookid", null); // <logbookid>guid</logbookid> (n/a)
+        /***************location****************/
+        /*org.ksoap2.serialization.SoapObject logbook
+                = new org.ksoap2.serialization.SoapObject(ns, "logbook"); // <logbook>
+        logbook.addProperty("id", g.getLogbook().getId()); // <id>guid</id>
+        logbook.addProperty("datetime", g.getLogbook().getDate()); // <datetime>dateTime</datetime>
+        geocache.addSoapObject(logbook); // </logbook> (n/a)*/
+        request.addSoapObject(geocache); // </g>
+        // end parameters
+        org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                = new blueharvest.geocaching.soap.envelope();
+        // marshal double
+        // http://seesharpgears.blogspot.com/2010/11/implementing-ksoap-marshal-interface.html
+        blueharvest.geocaching.soap.objects.marshals.MarshalDouble mdbl
+                = new blueharvest.geocaching.soap.objects.marshals.MarshalDouble();
+        mdbl.register(envelope);
+        envelope.implicitTypes = true;
+        envelope.setAddAdornments(false); // prefixing
+        envelope.setOutputSoapObject(request);
+        org.ksoap2.transport.HttpTransportSE transport
+                = new org.ksoap2.transport.HttpTransportSE(url);
+        transport.debug = true; // testing
+        try {
+            transport.call("http://blueharvestgeo.com/webservices/InsertGeocache", envelope);
+            org.ksoap2.serialization.SoapPrimitive response
+                    = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
+            g.setRequest(transport.requestDump); // testing
+            g.setResponse(transport.responseDump); // testing
+            return Boolean.parseBoolean(response.toString());
+        } catch (org.ksoap2.SoapFault ex) {
+            throw new RuntimeException("soap fault:" + ex.getMessage() + " ... " + transport.requestDump);
+        } catch (org.ksoap2.transport.HttpResponseException ex) {
+            throw new RuntimeException("http response exception:" + ex.getMessage() + " ... " + transport.requestDump);
+        } catch (java.io.IOException ex) {
+            throw new RuntimeException("io exception:" + ex.getMessage() + " ... " + transport.requestDump);
+        } catch (org.xmlpull.v1.XmlPullParserException ex) {
+            throw new RuntimeException("xml pull parser exception:" + ex.getMessage() + " ... " + transport.requestDump);
+        } catch (java.lang.Exception ex) {
+            throw new RuntimeException("exception:" + ex.getLocalizedMessage() + " ... " + transport.requestDump);
+        }
     }
 
     public static boolean update(geocache g) {
