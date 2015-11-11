@@ -141,7 +141,7 @@ public class user extends blueharvest.geocaching.concepts.user {
         user.addSoapObject(role);
         //user.addProperty("empty", null);
         request.addSoapObject(user);
-        // end paramters
+        // end parameters
         org.ksoap2.serialization.SoapSerializationEnvelope envelope
                 = new blueharvest.geocaching.soap.envelope();
         envelope.implicitTypes = true;

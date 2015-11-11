@@ -63,7 +63,7 @@ public abstract class address {
             return name;
         }
 
-        public String getAbbrevation() {
+        public String getAbbreviation() {
             return abbreviation;
         }
 
