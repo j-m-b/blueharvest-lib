@@ -1,7 +1,5 @@
 package blueharvest.geocaching.soap.objects;
 
-import java.text.ParseException;
-
 /**
  * @author jmb
  * @since 2015-11-08
@@ -72,11 +70,7 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
                 }
             }
             //child.getProperty("uri").toString(); // todo: either use or refactor
-        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
-            // todo: do something
-            //System.out.println(ex.getMessage());
-            //throw new RuntimeException(ex.getMessage());
-        } catch (java.text.ParseException ex) { // SimpleDateFormat
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException | java.text.ParseException ex) {
             // todo: do something
             //System.out.println(ex.getMessage());
             //throw new RuntimeException(ex.getMessage());
@@ -151,12 +145,12 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
 
     /**
      * <h3>deletes a logbook</h3>
+     * todo: implementation (complex cascading deletes, consider a placeholder logbook)
      *
-     * @param id
+     * @param id id
      * @return true/false depending on whether the delete was successful
      * @throws java.lang.UnsupportedOperationException
      * @throws java.lang.UnsupportedOperationException
-     * @todo implementation (complex cascading deletes, consider a placeholder logbook)
      * @since 2015-11
      */
     public static boolean delete(java.util.UUID id) {
@@ -300,12 +294,11 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
 
         /**
          * <h3>updates an entry</h3>
-         *
+         * todo: implementation ... this may be useful for typos, etc.
          * @param e (e)ntry
          * @return true/false whether the update was successful
          * @throws java.lang.UnsupportedOperationException
          * @throws java.lang.UnsupportedOperationException
-         * @todo implementation ... this may be useful for typos, etc.
          * @since 2015-11
          */
         public static boolean update(entry e) {
@@ -314,12 +307,11 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
 
         /**
          * <h3>deletes an entry</h3>
-         *
+         * todo: implementation
          * @param id id
          * @return true/false depending on the success of the delete
          * @throws java.lang.UnsupportedOperationException
          * @throws java.lang.UnsupportedOperationException
-         * @todo implementation
          * @since 2015-11
          */
         public static boolean delete(java.util.UUID id) {

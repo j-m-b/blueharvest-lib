@@ -8,9 +8,6 @@ public class location extends blueharvest.geocaching.concepts.location {
 
     private final static String url = "https://blueharvestgeo.com/WebServices/LocationService.asmx";
 
-    private String request;
-    private String response;
-
     /**
      * <h3>location</h3>
      * represents the latitude and longitude coordinates on globe
@@ -24,27 +21,12 @@ public class location extends blueharvest.geocaching.concepts.location {
      * @see blueharvest.geocaching.concepts.location.coordinate
      * @since 2015-11
      */
-    public location(java.util.UUID id, String name, double latitude, double longitude,
-                    int altitude, blueharvest.geocaching.concepts.address address) {
+    public location(java.util.UUID id,
+                    @SuppressWarnings("null") /*@com.sun.istack.internal.Nullable*/ String name,
+                    double latitude, double longitude, int altitude,
+                    @SuppressWarnings("null") /*@com.sun.istack.internal.Nullable*/
+                    blueharvest.geocaching.concepts.address address) {
         super(id, name, latitude, longitude, altitude, address);
-        request = "";
-        response = "";
-    }
-
-    public void setRequest(String value) {
-        request = value;
-    }
-
-    public void setResponse(String value) {
-        response = value;
-    }
-
-    public String getRequest() {
-        return request;
-    }
-
-    public String getResponse() {
-        return response;
     }
 
     /**
@@ -160,13 +142,13 @@ public class location extends blueharvest.geocaching.concepts.location {
         envelope.setOutputSoapObject(request);
         org.ksoap2.transport.HttpTransportSE transport
                 = new org.ksoap2.transport.HttpTransportSE(url);
-        transport.debug = true; // testing
+        //transport.debug = true; // testing
         try {
             transport.call("http://blueharvestgeo.com/webservices/InsertLocation", envelope);
             org.ksoap2.serialization.SoapPrimitive response
                     = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
-            l.setRequest(transport.requestDump); // testing
-            l.setResponse(transport.responseDump); // testing
+            //System.out.println(transport.requestDump); // testing
+            //System.out.println(transport.responseDump); // testing
             return Boolean.parseBoolean(response.toString());
         } catch (org.ksoap2.SoapFault ex) {
             throw new RuntimeException(

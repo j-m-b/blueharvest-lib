@@ -8,9 +8,6 @@ public class image extends blueharvest.geocaching.concepts.image {
 
     private final static String url = "https://blueharvestgeo.com/WebServices/ImageService.asmx";
 
-    private String request;
-    private String response;
-
     /**
      * <h3>constructor</h3>
      *
@@ -23,26 +20,9 @@ public class image extends blueharvest.geocaching.concepts.image {
      * @see java.io.File
      * @since 2015-11-08
      */
-    public image(java.util.UUID id, java.net.URI uri, String caption, java.io.File file) {
+    public image(java.util.UUID id, java.net.URI uri, String caption,
+                 @SuppressWarnings("null") /*@com.sun.istack.internal.Nullable*/ java.io.File file) {
         super(id, uri, caption, file);
-        this.request = "";
-        this.response = "";
-    }
-
-    public void setRequest(String value) {
-        request = value;
-    }
-
-    public void setResponse(String value) {
-        response = value;
-    }
-
-    public String getRequest() {
-        return request;
-    }
-
-    public String getResponse() {
-        return response;
     }
 
     /**
@@ -114,13 +94,13 @@ public class image extends blueharvest.geocaching.concepts.image {
         envelope.setOutputSoapObject(request);
         org.ksoap2.transport.HttpTransportSE transport
                 = new org.ksoap2.transport.HttpTransportSE(url); // ?wsdl
-        transport.debug = true; // testing
+        //transport.debug = true; // testing
         try {
             transport.call("http://blueharvestgeo.com/webservices/InsertImage", envelope);
             org.ksoap2.serialization.SoapPrimitive response
                     = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
-            i.setRequest(transport.requestDump); // testing
-            i.setResponse(transport.responseDump); // testing
+            //System.out.println(transport.requestDump); // testing
+            //System.out.println(transport.responseDump); // testing
             return Boolean.parseBoolean(response.toString());
         } catch (org.ksoap2.SoapFault ex) {
             throw new RuntimeException(

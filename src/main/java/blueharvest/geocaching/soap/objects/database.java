@@ -8,6 +8,15 @@ public class database {
 
     private final static String url = "https://blueharvestgeo.com/WebServices/DatabaseService.asmx";
 
+    /**
+     * <h3>deletes all* data from tables in system database</h3>
+     * *one little exception: four test cases remain in the user table
+     *
+     * @param username username
+     * @param password password
+     * @return true/false depending on whether the delete was successful
+     * @since 2015-11
+     */
     public static boolean delete(String username, String password) {
         org.ksoap2.serialization.SoapObject request
                 = new blueharvest.geocaching.soap.request("DeleteAll");

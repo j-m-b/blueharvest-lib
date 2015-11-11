@@ -8,9 +8,6 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
 
     private final static String url = "https://blueharvestgeo.com/WebServices/GeocacheService.asmx";
 
-    private String request;
-    private String response;
-
     /**
      * <h3>constructor</h3>
      * instantiates this
@@ -37,29 +34,12 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
     public geocache(java.util.UUID id, java.util.Date anniversary,
                     String name, String description, int difficulty,
                     int size, int terrain, int status, int type, user creator,
+                    @SuppressWarnings("null") /*@com.sun.istack.internal.Nullable*/
                     java.util.ArrayList<blueharvest.geocaching.concepts.image> images,
                     blueharvest.geocaching.concepts.location location,
                     blueharvest.geocaching.concepts.logbook logbook) {
         super(id, anniversary, name, description, difficulty, size,
                 terrain, status, type, creator, images, location, logbook);
-        this.request = "";
-        this.response = "";
-    }
-
-    public String getResponse() {
-        return response;
-    }
-
-    public void setResponse(String value) {
-        response = value;
-    }
-
-    public String getRequest() {
-        return request;
-    }
-
-    public void setRequest(String value) {
-        request = value;
     }
 
     /**
@@ -103,9 +83,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                     null, // todo: images
                     getLocation((org.ksoap2.serialization.SoapObject) response.getProperty("location")),
                     getLogbook((org.ksoap2.serialization.SoapObject) response.getProperty("logbook")));
-        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
-            throw new RuntimeException(ex.getMessage());
-        } catch (java.text.ParseException ex) {
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException | java.text.ParseException ex) {
             throw new RuntimeException(ex.getMessage());
         }
         return g;
@@ -190,24 +168,21 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
         envelope.setOutputSoapObject(request);
         org.ksoap2.transport.HttpTransportSE transport
                 = new org.ksoap2.transport.HttpTransportSE(url);
-        transport.debug = true; // todo: testing
+        //transport.debug = true; // testing
         try {
             transport.call("http://blueharvestgeo.com/webservices/InsertGeocache", envelope);
             org.ksoap2.serialization.SoapPrimitive response
                     = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
-            g.setRequest(transport.requestDump); // testing
-            g.setResponse(transport.responseDump); // testing
+            //System.out.println(transport.requestDump); // testing
+            //System.out.println(transport.responseDump); // testing
             return Boolean.parseBoolean(response.toString());
         } catch (org.ksoap2.SoapFault ex) {
-            throw new RuntimeException("soap fault:" + ex.getMessage() + " ... " + transport.requestDump);
-        } catch (org.ksoap2.transport.HttpResponseException ex) {
-            throw new RuntimeException("http response exception:" + ex.getMessage() + " ... " + transport.requestDump);
+            throw new RuntimeException(ex.getMessage());
+        } catch (org.ksoap2.transport.HttpResponseException | org.xmlpull.v1.XmlPullParserException ex) {
+            throw new RuntimeException(ex.getMessage());
         } catch (java.io.IOException ex) {
-            throw new RuntimeException("io exception:" + ex.getMessage() + " ... " + transport.requestDump);
-        } catch (org.xmlpull.v1.XmlPullParserException ex) {
-            throw new RuntimeException("xml pull parser exception:" + ex.getMessage() + " ... " + transport.requestDump);
-        } catch (java.lang.Exception ex) {
-            throw new RuntimeException("exception:" + ex.getLocalizedMessage() + " ... " + transport.requestDump);
+            throw new RuntimeException("java.io.IOException " + ex.getMessage());
+        //} catch (java.lang.Exception ex) {
         }
     }
 
@@ -309,7 +284,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
 
         /**
          * <h3>constructor</h3>
-         * gets geocaches within a radius of center coordinates<br>
+         * gets geocaches within a radius of center coordinates;<br>
          * using the radius of the earth as 6371.01 kilometers
          * <p/>
          * the following are null/empty:
@@ -332,13 +307,11 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
          * uses {@link blueharvest.geocaching.soap.objects.geocache#getLogbook(org.ksoap2.serialization.SoapObject)}<br>
          * replaces {@link #geocaches(double, double, double, double, double, double, double)}
          *
-         * @param distance  measurement from center coordinates
          * @param latitude  center latitude in decimal degrees
          * @param longitude center longitude in decimal degrees
-         * @param distance  distance from the center point in !kilometers!
+         *                  coordinates
+         * @param distance  measurement from center coordinates in !kilometers!
          *                  (miles = kilometers * 0.621371)
-         * @return a list of geocaches within the distance from the center
-         * coordinates
          * @see <a href="http://JanMatuschek.de/LatitudeLongitudeBoundingCoordinates#Java">
          * http://JanMatuschek.de/LatitudeLongitudeBoundingCoordinates#Java</a>
          * @see <a href="https://blueharvestgeo.com/WebServices/GeocacheService.asmx?op=GetGeocachesWithinDistance">
@@ -352,9 +325,9 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                     = blueharvest.geocaching.util.GeoLocation.fromDegrees(latitude, longitude);
             blueharvest.geocaching.util.GeoLocation[] bc
                     = gl.boundingCoordinates(distance, earthradius); // (b)ounding(c)coordinates
-            boolean m
+            /*boolean m
                     = bc[0].getLongitudeInDegrees()
-                    > bc[1].getLongitudeInRadians(); // meridian180WithinDistance
+                    > bc[1].getLongitudeInRadians(); // meridian180WithinDistance*/
             double minlatrad = bc[0].getLatitudeInRadians();
             double maxlatrad = bc[1].getLatitudeInRadians();
             double minlngrad = bc[0].getLongitudeInRadians();
@@ -459,8 +432,6 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
          * @param latrad    center latitude in radians
          * @param lngrad    center longitude in radians
          * @param distance  measurement from center coordinates
-         * @return a list of geocaches within the distance from the center
-         * coordinates
          * @see <a href="http://JanMatuschek.de/LatitudeLongitudeBoundingCoordinates#Java">
          * http://JanMatuschek.de/LatitudeLongitudeBoundingCoordinates#Java</a>
          * @see <a href="https://blueharvestgeo.com/WebServices/GeocacheService.asmx?op=GetGeocachesWithinDistance">
@@ -545,6 +516,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
 
     /**
      * <h3>serialized representation to use in soap</h3>
+     *
      * @since 2015-11
      */
     public static class serialized implements org.ksoap2.serialization.KvmSerializable {
@@ -644,7 +616,8 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                     creator = (blueharvest.geocaching.soap.objects.user.serialized) o;
                     break;
                 case 10:
-                    images = (java.util.ArrayList<blueharvest.geocaching.soap.objects.image.serialized>) o;
+                    images = null;
+                    // (java.util.ArrayList<blueharvest.geocaching.soap.objects.image.serialized>) o
                     break;
                 case 11:
                     location = (blueharvest.geocaching.soap.objects.location.serialized) o;

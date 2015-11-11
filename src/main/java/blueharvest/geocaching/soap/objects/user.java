@@ -8,9 +8,6 @@ public class user extends blueharvest.geocaching.concepts.user {
 
     private final static String url = "https://blueharvestgeo.com/WebServices/UserService.asmx";
 
-    private String request;
-    private String response;
-
     /**
      * <h3>constructor</h3>
      *
@@ -30,31 +27,15 @@ public class user extends blueharvest.geocaching.concepts.user {
      * @see blueharvest.geocaching.concepts.role
      * @since 2015-11-07
      */
-    public user(java.util.UUID id, java.util.Date anniversary, String username,
-                String password, java.util.UUID salt, String email, boolean active,
-                boolean locked, blueharvest.geocaching.concepts.location location,
+    public user(java.util.UUID id, java.util.Date anniversary, String username, String password,
+                java.util.UUID salt, String email, boolean active, boolean locked,
+                @SuppressWarnings("null") /*@com.sun.istack.internal.Nullable*/
+                blueharvest.geocaching.concepts.location location,
+                @SuppressWarnings("null") /*@com.sun.istack.internal.Nullable*/
                 blueharvest.geocaching.concepts.image image,
                 blueharvest.geocaching.concepts.role role) {
         super(id, anniversary, username, password, salt, email, active, locked,
                 location, image, role);
-        request = "";
-        response = "";
-    }
-
-    public void setRequest(String value) {
-        request = value;
-    }
-
-    public void setResponse(String value) {
-        response = value;
-    }
-
-    public String getResponse() {
-        return response;
-    }
-
-    public String getRequest() {
-        return request;
     }
 
     /**
@@ -68,7 +49,7 @@ public class user extends blueharvest.geocaching.concepts.user {
      * todo: location and image
      */
     public static user get(String username) {
-        user u = null;
+        user u;
         org.ksoap2.serialization.SoapObject request
                 = new blueharvest.geocaching.soap.request("GetUser");
         // parameters
@@ -97,9 +78,7 @@ public class user extends blueharvest.geocaching.concepts.user {
                                     .getProperty("id").toString()),
                             ((org.ksoap2.serialization.SoapObject) response.getProperty("role"))
                                     .getProperty("name").toString()));
-        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
-            throw new RuntimeException(ex.getMessage());
-        } catch (java.text.ParseException ex) {
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException | java.text.ParseException ex) {
             throw new RuntimeException(ex.getMessage());
         }
         return u;
@@ -149,13 +128,13 @@ public class user extends blueharvest.geocaching.concepts.user {
         envelope.setOutputSoapObject(request);
         org.ksoap2.transport.HttpTransportSE transport
                 = new org.ksoap2.transport.HttpTransportSE(url); // ?wsdl
-        transport.debug = true; // testing
+        //transport.debug = true; // testing
         try {
             transport.call("http://blueharvestgeo.com/webservices/InsertUser", envelope);
             org.ksoap2.serialization.SoapPrimitive response
                     = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
-            u.setRequest(transport.requestDump); // testing
-            u.setResponse(transport.responseDump); // testing
+            //System.out.println(transport.requestDump); // testing
+            //System.out.println(transport.responseDump); // testing
             return Boolean.parseBoolean(response.toString());
         } catch (org.ksoap2.SoapFault ex) {
             throw new RuntimeException("soap fault:" + ex.getMessage() + " ... " + transport.requestDump);
@@ -304,9 +283,7 @@ public class user extends blueharvest.geocaching.concepts.user {
             org.ksoap2.serialization.SoapPrimitive response
                     = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
             return Boolean.parseBoolean(response.toString());
-        } catch (java.io.IOException ex) {
-            throw new RuntimeException(ex.getMessage());
-        } catch (org.xmlpull.v1.XmlPullParserException ex) {
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
             throw new RuntimeException(ex.getMessage());
         }
     }

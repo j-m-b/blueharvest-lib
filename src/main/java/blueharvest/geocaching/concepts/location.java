@@ -96,8 +96,8 @@ public abstract class location {
                 + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng1 - lng2));
         // each degree on a great circle of Earth is 60 nautical miles
         double nm = 60 * Math.toDegrees(angle);
-        double mi = knot * nm;
-        return mi;
+        //double mi = knot * nm;
+        return knot * nm;
     }
 
     /**

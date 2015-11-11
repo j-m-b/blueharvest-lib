@@ -6,8 +6,8 @@ package blueharvest.geocaching.concepts;
  */
 public abstract class logbook {
 
-    java.util.UUID id;
-    java.util.Date date;
+    private final java.util.UUID id;
+    private final java.util.Date date;
     java.util.ArrayList<entry> entries = new java.util.ArrayList<>();
 
     /**
