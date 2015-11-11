@@ -7,12 +7,12 @@ package blueharvest.geocaching.soap.objects;
 public interface skeleton<T> {
 
     //public abstract <S> T get(S s);
-    public abstract T get(Object o);
+    T get(Object o);
 
-    public abstract boolean insert(T t);
+    boolean insert(T t);
 
-    public abstract boolean update(T t);
+    boolean update(T t);
 
-    public abstract boolean delete(java.util.UUID id);
+    boolean delete(java.util.UUID id);
 
 }
