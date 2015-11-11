@@ -35,7 +35,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                     String name, String description, int difficulty,
                     int size, int terrain, int status, int type, user creator,
                     @SuppressWarnings("null") /*@com.sun.istack.internal.Nullable*/
-                    java.util.ArrayList<blueharvest.geocaching.concepts.image> images,
+                            java.util.ArrayList<blueharvest.geocaching.concepts.image> images,
                     blueharvest.geocaching.concepts.location location,
                     blueharvest.geocaching.concepts.logbook logbook) {
         super(id, anniversary, name, description, difficulty, size,
@@ -182,7 +182,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
             throw new RuntimeException(ex.getMessage());
         } catch (java.io.IOException ex) {
             throw new RuntimeException("java.io.IOException " + ex.getMessage());
-        //} catch (java.lang.Exception ex) {
+            //} catch (java.lang.Exception ex) {
         }
     }
 
@@ -286,7 +286,6 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
          * <h3>constructor</h3>
          * gets geocaches within a radius of center coordinates;<br>
          * using the radius of the earth as 6371.01 kilometers
-         * <p/>
          * the following are null/empty:
          * <ul>
          * <li>geocache.user.anniversary - null</li>
@@ -301,11 +300,10 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
          * <li>geocache.location.address - null</li>
          * <li>geocache.logbook.entries - null</li>
          * </ul>
-         * <p/>
          * uses {@link blueharvest.geocaching.soap.objects.geocache#getUser(org.ksoap2.serialization.SoapObject)}<br>
          * uses {@link blueharvest.geocaching.soap.objects.geocache#getLocation(org.ksoap2.serialization.SoapObject)}<br>
          * uses {@link blueharvest.geocaching.soap.objects.geocache#getLogbook(org.ksoap2.serialization.SoapObject)}<br>
-         * replaces {@link #geocaches(double, double, double, double, double, double, double)}
+         * replaces blueharvest.geocaching.soap.objects.geocache.geocaches#(double, double, double, double, double, double, double)
          *
          * @param latitude  center latitude in decimal degrees
          * @param longitude center longitude in decimal degrees
@@ -420,7 +418,6 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
          * <li>geocache.location.address - null</li>
          * <li>geocache.logbook.entries - null</li>
          * </ul>
-         * <p/>
          * {@link blueharvest.geocaching.soap.objects.geocache#getUser(org.ksoap2.serialization.SoapObject)}
          * {@link blueharvest.geocaching.soap.objects.geocache#getLocation(org.ksoap2.serialization.SoapObject)}
          * {@link blueharvest.geocaching.soap.objects.geocache#getLogbook(org.ksoap2.serialization.SoapObject)}

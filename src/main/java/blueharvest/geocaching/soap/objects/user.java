@@ -89,7 +89,7 @@ public class user extends blueharvest.geocaching.concepts.user {
      * inserts a user through the web service into storage; username,
      * password (clear text), email, active, locked, and role.name are req'd; id and
      * anniversary default in storage; salt and password (hashed) computed
-     * by the web service<br />
+     * by the web service<br>
      * for a simpler way, see
      * {@link blueharvest.geocaching.soap.objects.user#insert(String, String, String, String)}
      *

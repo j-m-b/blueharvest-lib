@@ -25,7 +25,7 @@ public class location extends blueharvest.geocaching.concepts.location {
                     @SuppressWarnings("null") /*@com.sun.istack.internal.Nullable*/ String name,
                     double latitude, double longitude, int altitude,
                     @SuppressWarnings("null") /*@com.sun.istack.internal.Nullable*/
-                    blueharvest.geocaching.concepts.address address) {
+                            blueharvest.geocaching.concepts.address address) {
         super(id, name, latitude, longitude, altitude, address);
     }
 
@@ -109,7 +109,7 @@ public class location extends blueharvest.geocaching.concepts.location {
     /**
      * <h3>inserts a location</h3>
      * <a href="http://www.latlong.net/place/statue-of-liberty-national-monument-new-york-usa-2122.html">
-     * Statue of Liberty National Monument</a><br />
+     * Statue of Liberty National Monument</a><br>
      * coordinates: 40.689247, -74.044502, altitude/elevation: 3 meters or 10 feet
      * todo: address
      *
@@ -174,8 +174,7 @@ public class location extends blueharvest.geocaching.concepts.location {
      *
      * @param l (l)ocation
      * @return true/false depending on whether the update was successful
-     * @throws java.lang.UnsupportedOperationException
-     * @throws java.lang.UnsupportedOperationException
+     * @throws java.lang.UnsupportedOperationException - not implemented
      * @see <a href="https://blueharvestgeo.com/WebServices/LocationService.asmx?op=UpdateLocation">
      * UpdateLocation</a>
      * @since 2015-11-09

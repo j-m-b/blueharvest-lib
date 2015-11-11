@@ -126,8 +126,7 @@ public class image extends blueharvest.geocaching.concepts.image {
      *
      * @param i (i)mage
      * @return true/false depending on whether the image was updated
-     * @throws java.lang.UnsupportedOperationException
-     * @throws java.lang.UnsupportedOperationException
+     * @throws java.lang.UnsupportedOperationException - not implemented
      * @since 2015-11-09
      */
     public static boolean update(image i) {
@@ -140,8 +139,7 @@ public class image extends blueharvest.geocaching.concepts.image {
      *
      * @param id id of the image
      * @return true/false depending on whether the image was inserted
-     * @throws java.lang.UnsupportedOperationException
-     * @throws java.lang.UnsupportedOperationException
+     * @throws java.lang.UnsupportedOperationException - not implemented
      * @since 2015-11-09
      */
     public static boolean delete(java.util.UUID id) {
@@ -158,8 +156,7 @@ public class image extends blueharvest.geocaching.concepts.image {
      *
      * @param f (f)ile to be uploaded
      * @return true/false whether the image was uploaded
-     * @throws java.lang.UnsupportedOperationException
-     * @throws java.lang.UnsupportedOperationException
+     * @throws java.lang.UnsupportedOperationException - not implemented
      * @see <a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjSingleOpJava.html">
      * Upload an Object Using the AWS SDK for Java</a>
      * @see <a href="http://javatutorial.net/java-s3-example">Java S3 Example</a>

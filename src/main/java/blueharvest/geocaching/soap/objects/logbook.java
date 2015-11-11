@@ -134,8 +134,7 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
      *
      * @param l (l)ogbook
      * @return true/false depending on whether the update was successful
-     * @throws java.lang.UnsupportedOperationException
-     * @throws java.lang.UnsupportedOperationException
+     * @throws java.lang.UnsupportedOperationException - not implemented
      * @since 2015-11-09
      * @deprecated no replacement, there is nothing to update
      */
@@ -149,8 +148,7 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
      *
      * @param id id
      * @return true/false depending on whether the delete was successful
-     * @throws java.lang.UnsupportedOperationException
-     * @throws java.lang.UnsupportedOperationException
+     * @throws java.lang.UnsupportedOperationException - not implemented
      * @since 2015-11
      */
     public static boolean delete(java.util.UUID id) {
@@ -241,7 +239,7 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
 
         /**
          * <h3>inserts a logbook entry</h3>
-         * required: title, text, user.id, and logbookid<br />
+         * required: title, text, user.id, and logbookid
          *
          * @param e         (e)ntry
          * @param logbookid id og the logbook for which this belongs to
@@ -295,10 +293,10 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
         /**
          * <h3>updates an entry</h3>
          * todo: implementation ... this may be useful for typos, etc.
+         *
          * @param e (e)ntry
          * @return true/false whether the update was successful
-         * @throws java.lang.UnsupportedOperationException
-         * @throws java.lang.UnsupportedOperationException
+         * @throws java.lang.UnsupportedOperationException - not implemented
          * @since 2015-11
          */
         public static boolean update(entry e) {
@@ -308,10 +306,10 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
         /**
          * <h3>deletes an entry</h3>
          * todo: implementation
+         *
          * @param id id
          * @return true/false depending on the success of the delete
-         * @throws java.lang.UnsupportedOperationException
-         * @throws java.lang.UnsupportedOperationException
+         * @throws java.lang.UnsupportedOperationException - not implemented
          * @since 2015-11
          */
         public static boolean delete(java.util.UUID id) {
