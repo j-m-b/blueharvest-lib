@@ -190,7 +190,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
         envelope.setOutputSoapObject(request);
         org.ksoap2.transport.HttpTransportSE transport
                 = new org.ksoap2.transport.HttpTransportSE(url);
-        transport.debug = true; // testing
+        transport.debug = true; // todo: testing
         try {
             transport.call("http://blueharvestgeo.com/webservices/InsertGeocache", envelope);
             org.ksoap2.serialization.SoapPrimitive response

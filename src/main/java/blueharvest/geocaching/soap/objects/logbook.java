@@ -1,5 +1,7 @@
 package blueharvest.geocaching.soap.objects;
 
+import java.text.ParseException;
+
 /**
  * @author jmb
  * @since 2015-11-08
@@ -7,9 +9,6 @@ package blueharvest.geocaching.soap.objects;
 public class logbook extends blueharvest.geocaching.concepts.logbook {
 
     private final static String url = "https://blueharvestgeo.com/WebServices/LogbookService.asmx";
-
-    private String request;
-    private String response;
 
     /**
      * <h3>constructor</h3>
@@ -23,28 +22,66 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
     public logbook(java.util.UUID id, java.util.Date date,
                    java.util.ArrayList<blueharvest.geocaching.concepts.logbook.entry> entries) {
         super(id, date, entries);
-        this.request = "";
-        this.response = "";
     }
 
-    public void setRequest(String value) {
-        request = value;
-    }
-
-    public void setResponse(String value) {
-        response = value;
-    }
-
-    public String getResponse() {
-        return response;
-    }
-
-    public String getRequest() {
-        return request;
-    }
-
+    /**
+     * <h3>gets a logbook</h3>
+     * todo: refactor for completeness, there are a lot of nulls
+     * use at your own risk
+     *
+     * @param id id
+     * @return a logbook with entries if there are any
+     * @see <a href="https://blueharvestgeo.com/WebServices/LogbookService.asmx?op=GetLogbook">
+     * GetLogbook</a>
+     * @since 2015-11-11 Veteran's Day
+     */
     public static logbook get(java.util.UUID id) {
-        throw new java.lang.UnsupportedOperationException("Not supported yet.");
+        logbook l = null;
+        org.ksoap2.serialization.SoapObject request
+                = new blueharvest.geocaching.soap.request("GetLogbook");
+        // parameters
+        request.addProperty("id", id.toString());
+        org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                = new blueharvest.geocaching.soap.envelope();
+        envelope.setOutputSoapObject(request);
+        org.ksoap2.transport.HttpTransportSE transport
+                = new org.ksoap2.transport.HttpTransportSE(url);
+        transport.debug = true; // todo: testing
+        try {
+            transport.call("http://blueharvestgeo.com/webservices/GetLogbook", envelope);
+            org.ksoap2.serialization.SoapObject response
+                    = (org.ksoap2.serialization.SoapObject) envelope.getResponse();
+            //System.out.println(transport.requestDump); // testing
+            System.out.println(transport.responseDump); // testing
+            if (response.getPropertyCount() > 0) {
+                l = new blueharvest.geocaching.soap.objects.logbook(id, null,
+                        new java.util.ArrayList<blueharvest.geocaching.concepts.logbook.entry>());
+                for (int i = 0; i < response.getPropertyCount(); i++) {
+                    org.ksoap2.serialization.SoapObject child
+                            = (org.ksoap2.serialization.SoapObject) response.getProperty(i);
+                    l.getEntries().add(new blueharvest.geocaching.soap.objects.logbook.entry(
+                            java.util.UUID.fromString(child.getProperty("id").toString()),
+                            new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss",
+                                    java.util.Locale.US).parse(
+                                    child.getProperty("datetime").toString()),
+                            child.getProperty("title").toString(),
+                            child.getProperty("text").toString(),
+                            new blueharvest.geocaching.soap.objects.user(null, null,
+                                    child.getProperty("username").toString(),
+                                    null, null, null, false, false, null, null, null))); // todo: refactor
+                }
+            }
+            //child.getProperty("uri").toString(); // todo: either use or refactor
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
+            // todo: do something
+            //System.out.println(ex.getMessage());
+            //throw new RuntimeException(ex.getMessage());
+        } catch (java.text.ParseException ex) { // SimpleDateFormat
+            // todo: do something
+            //System.out.println(ex.getMessage());
+            //throw new RuntimeException(ex.getMessage());
+        }
+        return l;
     }
 
     /**
@@ -112,16 +149,28 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * <h3>deletes a logbook</h3>
+     *
+     * @param id
+     * @return true/false depending on whether the delete was successful
+     * @throws java.lang.UnsupportedOperationException
+     * @throws java.lang.UnsupportedOperationException
+     * @todo implementation (complex cascading deletes, consider a placeholder logbook)
+     * @since 2015-11
+     */
     public static boolean delete(java.util.UUID id) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
     /**
-     * serialized representation to use in soap
+     * <h3>serialized representation to use in soap</h3>
+     *
+     * @since 2015-11
      */
     public static class serialized implements org.ksoap2.serialization.KvmSerializable {
 
-        public java.util.UUID id; // this could be a problem
+        public java.util.UUID id;
         public String name;
 
         public serialized() {
@@ -176,9 +225,6 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
 
     public static class entry extends blueharvest.geocaching.concepts.logbook.entry {
 
-        private String request;
-        private String response;
-
         /**
          * <h3>constructor</h3>
          *
@@ -195,22 +241,6 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
             super(id, date, title, text, author);
         }
 
-        public void setRequest(String value) {
-            request = value;
-        }
-
-        public void setResponse(String value) {
-            response = value;
-        }
-
-        public String getRequest() {
-            return request;
-        }
-
-        public String getResponse() {
-            return response;
-        }
-
         public static entry get(java.util.UUID id) {
             throw new java.lang.UnsupportedOperationException("Not supported yet.");
         }
@@ -218,8 +248,6 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
         /**
          * <h3>inserts a logbook entry</h3>
          * required: title, text, user.id, and logbookid<br />
-         * this may not be necessary ...
-         * todo: test with logbook
          *
          * @param e         (e)ntry
          * @param logbookid id og the logbook for which this belongs to
@@ -246,13 +274,11 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
             envelope.setOutputSoapObject(request);
             org.ksoap2.transport.HttpTransportSE transport
                     = new org.ksoap2.transport.HttpTransportSE(url);
-            transport.debug = true; // testing
+            transport.debug = true; // todo: testing
             try {
                 transport.call("http://blueharvestgeo.com/webservices/InsertLogbookEntry", envelope);
                 org.ksoap2.serialization.SoapPrimitive response
                         = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
-                e.setRequest(transport.requestDump); // testing
-                e.setResponse(transport.responseDump); // testing
                 return Boolean.parseBoolean(response.toString());
             } catch (org.ksoap2.SoapFault ex) {
                 throw new RuntimeException(
@@ -272,21 +298,43 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
             }
         }
 
+        /**
+         * <h3>updates an entry</h3>
+         *
+         * @param e (e)ntry
+         * @return true/false whether the update was successful
+         * @throws java.lang.UnsupportedOperationException
+         * @throws java.lang.UnsupportedOperationException
+         * @todo implementation ... this may be useful for typos, etc.
+         * @since 2015-11
+         */
         public static boolean update(entry e) {
             throw new java.lang.UnsupportedOperationException("Not supported yet.");
         }
 
+        /**
+         * <h3>deletes an entry</h3>
+         *
+         * @param id id
+         * @return true/false depending on the success of the delete
+         * @throws java.lang.UnsupportedOperationException
+         * @throws java.lang.UnsupportedOperationException
+         * @todo implementation
+         * @since 2015-11
+         */
         public static boolean delete(java.util.UUID id) {
             throw new java.lang.UnsupportedOperationException("Not supported yet.");
         }
 
         /**
-         * serialized representation to use in soap
+         * <h3>serialized representation to use in soap</h3>
+         *
+         * @since 2015-11
          */
         public static class serialized implements org.ksoap2.serialization.KvmSerializable {
 
-            public java.util.UUID id; // this could be a problem
-            public java.util.Date date; // this could be a problem, too
+            public java.util.UUID id;
+            public java.util.Date date; // needs marshalling
             public String title;
             public String text;
             public blueharvest.geocaching.soap.objects.user.serialized author;
