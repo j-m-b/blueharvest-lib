@@ -280,6 +280,38 @@ public class user extends blueharvest.geocaching.concepts.user {
     }
 
     /**
+     * <h3>checks if the username already exists</h3>
+     *
+     * @param username username to check
+     * @return true if the username exists, false if the username does
+     * not exist
+     * @see <a href="https://blueharvestgeo.com/WebServices/UserService.asmx?op=IsUsernameAvailable">
+     * IsUserName</a>
+     * @since 2015-11-10
+     */
+    public static boolean exists(String username) {
+        org.ksoap2.serialization.SoapObject request
+                = new blueharvest.geocaching.soap.request("IsUsernameAvailable");
+        // parameters
+        request.addProperty("username", username);
+        org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                = new blueharvest.geocaching.soap.envelope();
+        envelope.setOutputSoapObject(request);
+        org.ksoap2.transport.HttpTransportSE transport
+                = new org.ksoap2.transport.HttpTransportSE(url);
+        try {
+            transport.call("http://blueharvestgeo.com/webservices/IsUsernameAvailable", envelope);
+            org.ksoap2.serialization.SoapPrimitive response
+                    = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
+            return Boolean.parseBoolean(response.toString());
+        } catch (java.io.IOException ex) {
+            throw new RuntimeException(ex.getMessage());
+        } catch (org.xmlpull.v1.XmlPullParserException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
      * nested class for serialized object for soap
      *
      * @see <a href="http://seesharpgears.blogspot.com/2010/10/ksoap-android-web-service-tutorial-with.html">
