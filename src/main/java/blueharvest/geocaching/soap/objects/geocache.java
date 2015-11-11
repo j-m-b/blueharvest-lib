@@ -46,8 +46,69 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
         this.response = "";
     }
 
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String value) {
+        response = value;
+    }
+
+    public String getRequest() {
+        return request;
+    }
+
+    public void setRequest(String value) {
+        request = value;
+    }
+
+    /**
+     * <h3>gets a geocache</h3>
+     *
+     * @param id id
+     * @return a geocache or null
+     * @see <a href="https://blueharvestgeo.com/WebServices/GeocacheService.asmx?op=GetGeocache">
+     * GetGeocache</a>
+     * @since 2015-11-10
+     */
     public static geocache get(java.util.UUID id) {
-        throw new java.lang.UnsupportedOperationException("Not supported yet.");
+        geocache g;
+        org.ksoap2.serialization.SoapObject request
+                = new blueharvest.geocaching.soap.request("GetGeocache");
+        // parameters
+        request.addProperty("id", id.toString());
+        org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                = new blueharvest.geocaching.soap.envelope();
+        envelope.setOutputSoapObject(request);
+        org.ksoap2.transport.HttpTransportSE transport
+                = new org.ksoap2.transport.HttpTransportSE(url);
+        try {
+            transport.call("http://blueharvestgeo.com/webservices/GetGeocache", envelope);
+            org.ksoap2.serialization.SoapObject response
+                    = (org.ksoap2.serialization.SoapObject) envelope.getResponse();
+            id = java.util.UUID.fromString(response.getProperty("id").toString());
+            java.util.Date anniversary = new java.text.SimpleDateFormat(
+                    "yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US).parse(
+                    response.getProperty("anniversary").toString());
+            String name = response.getProperty("name").toString();
+            String description = response.getProperty("description").toString();
+            int difficulty = Integer.valueOf(response.getProperty("difficulty").toString());
+            int terrain = Integer.valueOf(response.getProperty("terrain").toString());
+            int size = Integer.valueOf(response.getProperty("size").toString());
+            int status = Integer.valueOf(response.getProperty("status").toString());
+            int type = Integer.valueOf(response.getProperty("type").toString());
+            g = new blueharvest.geocaching.soap.objects.geocache(id, anniversary,
+                    name, description, difficulty, terrain, size, status, type,
+                    getUser((org.ksoap2.serialization.SoapObject) response.getProperty("user")),
+                    null, // todo: images
+                    getLocation((org.ksoap2.serialization.SoapObject) response.getProperty("location")),
+                    getLogbook((org.ksoap2.serialization.SoapObject) response.getProperty("logbook")));
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
+            throw new RuntimeException(ex.getMessage());
+        } catch (java.text.ParseException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+        return g;
     }
 
     /**
@@ -158,20 +219,52 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
-    public String getResponse() {
-        return response;
+    private static user getUser(org.ksoap2.serialization.SoapObject child) {
+        java.util.UUID id = java.util.UUID.fromString(child.getProperty("id").toString());
+        java.util.Date anniversary = null;
+        try {
+            anniversary = new java.text.SimpleDateFormat(
+                    "yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US).parse(
+                    child.getProperty("anniversary").toString());
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        String username = child.getProperty("username").toString();
+        java.util.UUID salt = java.util.UUID.fromString(child.getProperty("salt").toString());
+        String email = child.getProperty("email").toString();
+        boolean active = Boolean.parseBoolean(child.getProperty("active").toString());
+        boolean locked = Boolean.parseBoolean(child.getProperty("locked").toString());
+        //boolean empty = Boolean.parseBoolean(child.getProperty("empty").toString());
+        blueharvest.geocaching.soap.objects.role r
+                = new blueharvest.geocaching.soap.objects.role(
+                java.util.UUID.fromString(
+                        ((org.ksoap2.serialization.SoapObject) child.getProperty("role")).getProperty("id").toString()),
+                ((org.ksoap2.serialization.SoapObject) child.getProperty("role")).getProperty("name").toString());
+        return new blueharvest.geocaching.soap.objects.user(
+                id, anniversary, username, null, salt, email, active, locked, null, null, r);
+        // todo: image
     }
 
-    public void setResponse(String value) {
-        response = value;
+    private static location getLocation(org.ksoap2.serialization.SoapObject child) {
+        java.util.UUID id = java.util.UUID.fromString(child.getProperty("id").toString());
+        double latitude = Double.parseDouble(child.getProperty("latitude").toString());
+        double longitude = Double.parseDouble(child.getProperty("longitude").toString());
+        int altitude = Integer.parseInt(child.getProperty("altitude").toString());
+        return new location(id, null, latitude, longitude, altitude, null);
+        // todo: name and address
     }
 
-    public String getRequest() {
-        return request;
-    }
-
-    public void setRequest(String value) {
-        request = value;
+    private static logbook getLogbook(org.ksoap2.serialization.SoapObject child) {
+        java.util.UUID id = java.util.UUID.fromString(child.getProperty("id").toString());
+        java.util.Date datetime = null;
+        try {
+            datetime = new java.text.SimpleDateFormat(
+                    "yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US).parse(
+                    child.getProperty("datetime").toString());
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        return new logbook(id, datetime, null);
     }
 
     public static class geocaches extends java.util.ArrayList<geocache> {
@@ -193,6 +286,10 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
          * <li>geocache.location.address - null</li>
          * <li>geocache.logbook.entries - null (todo)</li>
          * </ul>
+         * <p/>
+         * {@link blueharvest.geocaching.soap.objects.geocache#getUser(org.ksoap2.serialization.SoapObject)}
+         * {@link blueharvest.geocaching.soap.objects.geocache#getLocation(org.ksoap2.serialization.SoapObject)}
+         * {@link blueharvest.geocaching.soap.objects.geocache#getLogbook(org.ksoap2.serialization.SoapObject)}
          *
          * @param minlatrad minimum latitude in radians
          * @param maxlatrad maximum latitude in radians
@@ -280,47 +377,6 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
             } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
                 throw new RuntimeException(ex.getMessage());
             }
-        }
-
-        private user getUser(org.ksoap2.serialization.SoapObject child) {
-            java.util.UUID id = java.util.UUID.fromString(child.getProperty("id").toString());
-            java.util.Date anniversary = null;
-            try {
-                anniversary = new java.text.SimpleDateFormat(
-                        "yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US).parse(
-                        child.getProperty("anniversary").toString());
-            } catch (java.text.ParseException e) {
-                e.printStackTrace();
-            }
-            String username = child.getProperty("username").toString();
-            java.util.UUID salt = java.util.UUID.fromString(child.getProperty("salt").toString());
-            String email = child.getProperty("email").toString();
-            boolean active = Boolean.parseBoolean(child.getProperty("active").toString());
-            boolean locked = Boolean.parseBoolean(child.getProperty("locked").toString());
-            boolean empty = Boolean.parseBoolean(child.getProperty("empty").toString());
-            return new blueharvest.geocaching.soap.objects.user(
-                    id, anniversary, username, null, salt, email, active, locked, null, null, null);
-        }
-
-        private location getLocation(org.ksoap2.serialization.SoapObject child) {
-            java.util.UUID id = java.util.UUID.fromString(child.getProperty("id").toString());
-            double latitude = Double.parseDouble(child.getProperty("latitude").toString());
-            double longitude = Double.parseDouble(child.getProperty("longitude").toString());
-            int altitude = Integer.parseInt(child.getProperty("altitude").toString());
-            return new location(id, null, latitude, longitude, altitude, null);
-        }
-
-        private logbook getLogbook(org.ksoap2.serialization.SoapObject child) {
-            java.util.UUID id = java.util.UUID.fromString(child.getProperty("id").toString());
-            java.util.Date datetime = null;
-            try {
-                datetime = new java.text.SimpleDateFormat(
-                        "yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US).parse(
-                        child.getProperty("datetime").toString());
-            } catch (java.text.ParseException e) {
-                e.printStackTrace();
-            }
-            return new logbook(id, datetime, null);
         }
 
     }
