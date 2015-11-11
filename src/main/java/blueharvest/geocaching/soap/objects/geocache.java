@@ -219,6 +219,15 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * <h3>gets a user from a ksoap object</h3>
+     * the non-serialized way to get a user object from a ksoap object
+     *
+     * @param child ksoap soap object
+     * @return a user
+     * @see org.ksoap2.serialization.SoapObject
+     * @since 2015-11
+     */
     private static user getUser(org.ksoap2.serialization.SoapObject child) {
         java.util.UUID id = java.util.UUID.fromString(child.getProperty("id").toString());
         java.util.Date anniversary = null;
@@ -250,6 +259,15 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
         // todo: image
     }
 
+    /**
+     * <h3>gets a location from a ksoap object</h3>
+     * the non-serialized way to get a location object from a ksoap object
+     *
+     * @param child ksoap soap object
+     * @return a location
+     * @see org.ksoap2.serialization.SoapObject
+     * @since 2015-11
+     */
     private static location getLocation(org.ksoap2.serialization.SoapObject child) {
         java.util.UUID id = java.util.UUID.fromString(child.getProperty("id").toString());
         double latitude = Double.parseDouble(child.getProperty("latitude").toString());
@@ -259,6 +277,15 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
         // todo: name and address
     }
 
+    /**
+     * <h3>gets a logbook from a ksoap object</h3>
+     * the non-serialized way to get a logbook object from a ksoap object
+     *
+     * @param child ksoap soap object
+     * @return a logbook
+     * @see org.ksoap2.serialization.SoapObject
+     * @since 2015-11
+     */
     private static logbook getLogbook(org.ksoap2.serialization.SoapObject child) {
         java.util.UUID id = java.util.UUID.fromString(child.getProperty("id").toString());
         java.util.Date datetime = null;
@@ -272,6 +299,12 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
         return new logbook(id, datetime, null);
     }
 
+    /**
+     * <h3>geocache lists</h3>
+     * new instantiation for a list of geocaches based on attributes
+     *
+     * @since 2015-11
+     */
     public static class geocaches extends java.util.ArrayList<geocache> {
 
         /**
@@ -294,9 +327,10 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
          * <li>geocache.logbook.entries - null</li>
          * </ul>
          * <p/>
-         * {@link blueharvest.geocaching.soap.objects.geocache#getUser(org.ksoap2.serialization.SoapObject)}
-         * {@link blueharvest.geocaching.soap.objects.geocache#getLocation(org.ksoap2.serialization.SoapObject)}
-         * {@link blueharvest.geocaching.soap.objects.geocache#getLogbook(org.ksoap2.serialization.SoapObject)}
+         * uses {@link blueharvest.geocaching.soap.objects.geocache#getUser(org.ksoap2.serialization.SoapObject)}<br>
+         * uses {@link blueharvest.geocaching.soap.objects.geocache#getLocation(org.ksoap2.serialization.SoapObject)}<br>
+         * uses {@link blueharvest.geocaching.soap.objects.geocache#getLogbook(org.ksoap2.serialization.SoapObject)}<br>
+         * replaces {@link #geocaches(double, double, double, double, double, double, double)}
          *
          * @param distance  measurement from center coordinates
          * @param latitude  center latitude in decimal degrees
@@ -310,7 +344,6 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
          * @see <a href="https://blueharvestgeo.com/WebServices/GeocacheService.asmx?op=GetGeocachesWithinDistance">
          * GetGeocachesWithinDistance</a>
          * @see blueharvest.geocaching.util.GeoLocation
-         * @see #geocaches(double, double, double, double, double, double, double)
          * @since 2015-11-10
          */
         public geocaches(double latitude, double longitude, double distance) {
@@ -396,7 +429,6 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                 throw new RuntimeException(ex.getMessage());
             }
         }
-
 
         /**
          * <h3>constructor</h3>
@@ -512,12 +544,13 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
     }
 
     /**
-     * serialized representation to use in soap
+     * <h3>serialized representation to use in soap</h3>
+     * @since 2015-11
      */
     public static class serialized implements org.ksoap2.serialization.KvmSerializable {
 
-        public java.util.UUID id; // this could be a problem
-        public java.util.Date anniversary; // this could be a problem, too
+        public java.util.UUID id; // as a string
+        public java.util.Date anniversary; // use marshalling
         public String name;
         public String description;
         public int difficulty;
