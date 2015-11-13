@@ -42,7 +42,8 @@ public class user extends blueharvest.geocaching.concepts.user {
      * <h3>gets a user</h3>
      * via web services
      *
-     * @param username username
+     * @param username username credentials to get user information
+     * @param password password credentials to get user information
      * @return a user or null
      * @see <a href="https://blueharvestgeo.com/WebServices/UserService.asmx?op=GetUser">GetUser</a>
      * @since 2015-11-07
@@ -198,19 +199,65 @@ public class user extends blueharvest.geocaching.concepts.user {
 
     /**
      * <h3>updates a user</h3>
-     * updates the user through the web service into storage; id, active,
+     * updates the user through the web service into storage; id required; active
      * and locked the only update-able attributes at this time and therefore
-     * req'd (all others may be null)
-     * todo: implementation
+     * req'd; username and password required for authentication (all others may be null);<br>
+     * catch 22: a locked or inactive user is not permitted to update, meaning, unless
+     * the user is active and not locked prior to update, the request is not authenticated
+     * and the update fails
      *
      * @param u (u)ser
-     * @return true/false dependent on whether the user was updated
-     * @throws java.lang.UnsupportedOperationException not supported yet
+     * @return true/false dependent on whether the update was successful
+     * @see <a href="https://blueharvestgeo.com/WebServices/UserService.asmx?op=UpdateUser">
+     * UpdateUser</a>
      * @since 2015-11-07
      */
     public static boolean update(user u) {
-        throw new java.lang.UnsupportedOperationException("Not supported yet.");
-        //return false;
+        org.ksoap2.serialization.SoapObject request
+                = new blueharvest.geocaching.soap.request("UpdateUser");
+        final String ns = "http://blueharvestgeo.com/webservices/";
+        // parameters
+        org.ksoap2.serialization.SoapObject user
+                = new org.ksoap2.serialization.SoapObject(ns, "u");
+        System.out.println(u.getId().toString());
+        user.addProperty("id", u.getId().toString());
+        //user.addProperty("anniversary", null);
+        user.addProperty("username", u.getUsername());
+        user.addProperty("password", u.getPassword());
+        //user.addProperty("salt", null);
+        user.addProperty("email", u.getEmail());
+        user.addProperty("active", u.isActive());
+        user.addProperty("locked", u.isLocked());
+        org.ksoap2.serialization.SoapObject role
+                = new org.ksoap2.serialization.SoapObject(ns, "role");
+        //role.addProperty("id", null);
+        role.addProperty("name", u.getRole().getName());
+        user.addSoapObject(role);
+        //user.addProperty("empty", null);
+        request.addSoapObject(user);
+        // end parameters
+        org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                = new blueharvest.geocaching.soap.envelope();
+        envelope.setOutputSoapObject(request);
+        org.ksoap2.transport.HttpTransportSE transport
+                = new org.ksoap2.transport.HttpTransportSE(url);
+        //transport.debug = true; // testing
+        try {
+            transport.call("http://blueharvestgeo.com/webservices/UpdateUser", envelope);
+            org.ksoap2.serialization.SoapPrimitive response
+                    = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
+            //System.out.println(transport.requestDump); // testing
+            //System.out.println(transport.responseDump); // testing
+            return response == null ? false : Boolean.parseBoolean(response.toString());
+        } catch (org.ksoap2.SoapFault ex) {
+            throw new RuntimeException(ex.getMessage());
+        } catch (org.ksoap2.transport.HttpResponseException ex) {
+            throw new RuntimeException(ex.getMessage() + " status code: " + ex.getStatusCode());
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
+            throw new RuntimeException(ex.getMessage());
+        } catch (java.lang.Exception ex) {
+            throw new RuntimeException(ex.getMessage() + " caused by " + ex.getCause().toString());
+        }
     }
 
     /**

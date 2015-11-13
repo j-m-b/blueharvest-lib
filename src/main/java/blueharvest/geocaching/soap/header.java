@@ -10,7 +10,7 @@ import jdk.nashorn.internal.runtime.Context;
 public class header { // extends org.kxml2.kdom.Element
 
     private final static String ns = "http://blueharvestgeo.com/webservices/";
-    public static String WS_KEY = "blueharvest-ws:tAt00in3!";
+    private final static String WS_KEY = "blueharvest-ws:tAt00in3!";
 
     public static org.kxml2.kdom.Element getElement() {
         org.kxml2.kdom.Element h =
