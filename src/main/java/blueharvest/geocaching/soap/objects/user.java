@@ -30,9 +30,9 @@ public class user extends blueharvest.geocaching.concepts.user {
     public user(java.util.UUID id, java.util.Date anniversary, String username, String password,
                 java.util.UUID salt, String email, boolean active, boolean locked,
                 @SuppressWarnings("null") /*@com.sun.istack.internal.Nullable*/
-                blueharvest.geocaching.concepts.location location,
+                        blueharvest.geocaching.concepts.location location,
                 @SuppressWarnings("null") /*@com.sun.istack.internal.Nullable*/
-                blueharvest.geocaching.concepts.image image,
+                        blueharvest.geocaching.concepts.image image,
                 blueharvest.geocaching.concepts.role role) {
         super(id, anniversary, username, password, salt, email, active, locked,
                 location, image, role);
@@ -48,12 +48,13 @@ public class user extends blueharvest.geocaching.concepts.user {
      * @since 2015-11-07
      * todo: location and image
      */
-    public static user get(String username) {
-        user u;
+    public static user get(String username, String password) {
+        user u = null;
         org.ksoap2.serialization.SoapObject request
                 = new blueharvest.geocaching.soap.request("GetUser");
         // parameters
         request.addProperty("username", username);
+        request.addProperty("password", password);
         org.ksoap2.serialization.SoapSerializationEnvelope envelope
                 = new blueharvest.geocaching.soap.envelope();
         envelope.setOutputSoapObject(request);
@@ -63,22 +64,25 @@ public class user extends blueharvest.geocaching.concepts.user {
             transport.call("http://blueharvestgeo.com/webservices/GetUser", envelope);
             org.ksoap2.serialization.SoapObject response
                     = (org.ksoap2.serialization.SoapObject) envelope.getResponse();
-            u = new user(java.util.UUID.fromString(response.getProperty("id").toString()),
-                    new java.text.SimpleDateFormat(
-                            "yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US).parse(
-                            response.getProperty("anniversary").toString()),
-                    username, response.getProperty("password").toString(),
-                    java.util.UUID.fromString(response.getProperty("salt").toString()),
-                    response.getProperty("email").toString(),
-                    Boolean.valueOf(response.getProperty("active").toString()),
-                    Boolean.valueOf(response.getProperty("locked").toString()),
-                    null, null,  // todo: location, image
-                    new role(java.util.UUID.fromString(
-                            ((org.ksoap2.serialization.SoapObject) response.getProperty("role"))
-                                    .getProperty("id").toString()),
-                            ((org.ksoap2.serialization.SoapObject) response.getProperty("role"))
-                                    .getProperty("name").toString()));
-        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException | java.text.ParseException ex) {
+            if (response != null)
+                u = new user(java.util.UUID.fromString(response.getProperty("id").toString()),
+                        new java.text.SimpleDateFormat(
+                                "yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US).parse(
+                                response.getProperty("anniversary").toString()),
+                        username, response.getProperty("password").toString(),
+                        java.util.UUID.fromString(response.getProperty("salt").toString()),
+                        response.getProperty("email").toString(),
+                        Boolean.valueOf(response.getProperty("active").toString()),
+                        Boolean.valueOf(response.getProperty("locked").toString()),
+                        null, null,  // todo: location, image
+                        new role(java.util.UUID.fromString(
+                                ((org.ksoap2.serialization.SoapObject) response.getProperty("role"))
+                                        .getProperty("id").toString()),
+                                ((org.ksoap2.serialization.SoapObject) response.getProperty("role"))
+                                        .getProperty("name").toString()));
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException |
+                java.text.ParseException | java.lang.NullPointerException ex) {
+            // todo: handle exceptions
             throw new RuntimeException(ex.getMessage());
         }
         return u;
