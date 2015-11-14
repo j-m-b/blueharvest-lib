@@ -105,6 +105,8 @@ public abstract class location {
      */
     public static class coordinate {
 
+        public enum type {latitude, longitude}
+
         private final double dd; // (d)ecimal (d)egrees
         private final int d; // (d)egree
         private final int m; // (m)inute
@@ -146,7 +148,7 @@ public abstract class location {
         }
 
         /**
-         * <h3>gets the degree ° for coordinate formatting</h3>
+         * <h3>gets the degree ° for sexigesimal coordinate formatting</h3>
          * e.g., <b>40°</b>47'53.5", <b>77°</b>51'36.1" (<b>degrees</b> minutes
          * seconds or dms); to determine hemisphere, see
          * {@link blueharvest.geocaching.concepts.location.coordinate#getDecimalDegrees()}
@@ -178,6 +180,27 @@ public abstract class location {
          */
         public double getSecond() {
             return s;
+        }
+
+        /**
+         * <h3>degree minute second representation</h3>
+         *
+         * @param type latitude or longitude
+         * @return string representation of the coordinate
+         * (i.e., 40° 26′ 46″ N or 79° 58′ 56″ W)
+         * @since 2015-11-13 Friday the 13th and <a href="http://www.oddday.net/"Odd Day</a>
+         * (last one of this century)
+         */
+        public String toSexigesimal(type type) {
+            String r = String.valueOf(d) + "\u00b0 "
+                    + String.valueOf(m) + "\' "
+                    + String.valueOf(new java.text.DecimalFormat("#.###").format(s)) + "\" ";
+            if (type == coordinate.type.latitude) {
+                r += (dd > 0) ? "N" : "S";
+            } else if (type == coordinate.type.longitude) {
+                r += (dd > 0) ? "W" : "E";
+            }
+            return r;
         }
 
     }

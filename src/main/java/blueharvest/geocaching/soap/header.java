@@ -1,9 +1,8 @@
 package blueharvest.geocaching.soap;
 
-import jdk.nashorn.internal.runtime.Context;
-
 /**
  * common credentials for web services to prevent external use
+ *
  * @author jmb
  * @since 2015-11-07
  */
