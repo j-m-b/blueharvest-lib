@@ -509,6 +509,19 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                 throw new RuntimeException(ex.getMessage());
             }
         }
+
+        /**
+         * <h3> get geocaches related to a user</h3>
+         * geocaches related to a user are either those found or favorites
+         * todo: implement ... maybe this could be stored on the user's device
+         *
+         * @param userid id of the user the geoaches are related to
+         * @since 2015-11-14
+         */
+        private geocaches(java.util.UUID userid) {
+
+        }
+
     }
 
     /**
