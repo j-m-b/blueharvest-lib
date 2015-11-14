@@ -21,18 +21,22 @@ public class address extends blueharvest.geocaching.concepts.address {
         super(street, city, region, postalcode);
     }
 
+    @SuppressWarnings("UnusedParameters")
     public static address get(java.util.UUID id) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
+    @SuppressWarnings("UnusedParameters")
     public static boolean insert(address a) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
+    @SuppressWarnings("UnusedParameters")
     public static boolean update(address a) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
+    @SuppressWarnings("UnusedParameters")
     public static boolean delete(java.util.UUID id) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }

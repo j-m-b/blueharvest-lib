@@ -134,10 +134,11 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
      *
      * @param l (l)ogbook
      * @return true/false depending on whether the update was successful
-     * @throws java.lang.UnsupportedOperationException - not implemented
+     * @throws java.lang.UnsupportedOperationException not implemented
      * @since 2015-11-09
      * @deprecated no replacement, there is nothing to update
      */
+    @SuppressWarnings("UnusedParameters")
     public static boolean update(logbook l) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
@@ -148,9 +149,10 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
      *
      * @param id id
      * @return true/false depending on whether the delete was successful
-     * @throws java.lang.UnsupportedOperationException - not implemented
+     * @throws java.lang.UnsupportedOperationException not implemented
      * @since 2015-11
      */
+    @SuppressWarnings("UnusedParameters")
     public static boolean delete(java.util.UUID id) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
@@ -233,6 +235,7 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
             super(id, date, title, text, author);
         }
 
+        @SuppressWarnings("UnusedParameters")
         public static entry get(java.util.UUID id) {
             throw new java.lang.UnsupportedOperationException("Not supported yet.");
         }
@@ -299,6 +302,7 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
          * @throws java.lang.UnsupportedOperationException - not implemented
          * @since 2015-11
          */
+        @SuppressWarnings("UnusedParameters")
         public static boolean update(entry e) {
             throw new java.lang.UnsupportedOperationException("Not supported yet.");
         }
@@ -312,6 +316,7 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
          * @throws java.lang.UnsupportedOperationException - not implemented
          * @since 2015-11
          */
+        @SuppressWarnings("UnusedParameters")
         public static boolean delete(java.util.UUID id) {
             throw new java.lang.UnsupportedOperationException("Not supported yet.");
         }

@@ -22,10 +22,10 @@ public class location extends blueharvest.geocaching.concepts.location {
      * @since 2015-11
      */
     public location(java.util.UUID id,
-                    @SuppressWarnings("null") /*@com.sun.istack.internal.Nullable*/ String name,
+                    @SuppressWarnings({"null", "SameParameterValue"}) String name,
                     double latitude, double longitude, int altitude,
-                    @SuppressWarnings("null") /*@com.sun.istack.internal.Nullable*/
-                            blueharvest.geocaching.concepts.address address) {
+                    @SuppressWarnings({"null", "SameParameterValue"})
+                    blueharvest.geocaching.concepts.address address) {
         super(id, name, latitude, longitude, altitude, address);
     }
 
@@ -179,10 +179,12 @@ public class location extends blueharvest.geocaching.concepts.location {
      * UpdateLocation</a>
      * @since 2015-11-09
      */
+    @SuppressWarnings("UnusedParameters")
     public static boolean update(location l) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
+    @SuppressWarnings("UnusedParameters")
     public static boolean delete(java.util.UUID id) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }

@@ -16,6 +16,7 @@ import org.xmlpull.v1.XmlSerializer;
  * Implementing KSOAP Marshal Interface</a>
  * @since 2015-11-09
  */
+@SuppressWarnings("ALL")
 public class MarshalDouble implements Marshal {
 
     public Object readInstance(XmlPullParser parser, String namespace, String name,

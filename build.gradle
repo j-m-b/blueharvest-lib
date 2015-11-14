@@ -4,7 +4,9 @@ version '0.0.2'
 group 'blueharvest.geocaching'
 
 /* Error:Execution failed for task ':app:preDexDebug' */
+//noinspection GroovyUnusedAssignment
 sourceCompatibility = JavaVersion.VERSION_1_7
+//noinspection GroovyUnusedAssignment
 targetCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {

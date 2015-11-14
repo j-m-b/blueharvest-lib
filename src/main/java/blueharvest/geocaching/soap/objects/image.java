@@ -21,7 +21,7 @@ public class image extends blueharvest.geocaching.concepts.image {
      * @since 2015-11-08
      */
     public image(java.util.UUID id, java.net.URI uri, String caption,
-                 @SuppressWarnings("null") /*@com.sun.istack.internal.Nullable*/ java.io.File file) {
+                 @SuppressWarnings({"null", "SameParameterValue"}) java.io.File file) {
         super(id, uri, caption, file);
     }
 
@@ -129,6 +129,7 @@ public class image extends blueharvest.geocaching.concepts.image {
      * @throws java.lang.UnsupportedOperationException - not implemented
      * @since 2015-11-09
      */
+    @SuppressWarnings("UnusedParameters")
     public static boolean update(image i) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
@@ -142,6 +143,7 @@ public class image extends blueharvest.geocaching.concepts.image {
      * @throws java.lang.UnsupportedOperationException - not implemented
      * @since 2015-11-09
      */
+    @SuppressWarnings("UnusedParameters")
     public static boolean delete(java.util.UUID id) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
@@ -162,6 +164,7 @@ public class image extends blueharvest.geocaching.concepts.image {
      * @see <a href="http://javatutorial.net/java-s3-example">Java S3 Example</a>
      * @since 2015-11-01
      */
+    @SuppressWarnings("UnusedParameters")
     public static boolean upload(java.io.File f) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
         // todo: setup sdk for android

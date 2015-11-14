@@ -248,7 +248,8 @@ public class user extends blueharvest.geocaching.concepts.user {
                     = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
             //System.out.println(transport.requestDump); // testing
             //System.out.println(transport.responseDump); // testing
-            return response == null ? false : Boolean.parseBoolean(response.toString());
+            //return response == null ? false : Boolean.parseBoolean(response.toString());
+            return response != null && Boolean.parseBoolean(response.toString());
         } catch (org.ksoap2.SoapFault ex) {
             throw new RuntimeException(ex.getMessage());
         } catch (org.ksoap2.transport.HttpResponseException ex) {
@@ -269,6 +270,7 @@ public class user extends blueharvest.geocaching.concepts.user {
      * @throws java.lang.UnsupportedOperationException not supported yet
      * @since 2015-11-07
      */
+    @SuppressWarnings("UnusedParameters")
     public static boolean delete(java.util.UUID id) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
         //return false;

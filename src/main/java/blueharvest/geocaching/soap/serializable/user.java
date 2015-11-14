@@ -1,14 +1,11 @@
 package blueharvest.geocaching.soap.serializable;
 
-import org.ksoap2.serialization.PropertyInfo;
-
-import java.util.Hashtable;
-
 /**
  * @author jmb
  * @since 2015-11-08
  * @deprecated use {@link blueharvest.geocaching.soap.objects.user.serialized}
  */
+@SuppressWarnings("ALL")
 public class user extends blueharvest.geocaching.concepts.user
         implements org.ksoap2.serialization.KvmSerializable {
 
@@ -33,12 +30,11 @@ public class user extends blueharvest.geocaching.concepts.user
 
     @Override
     public void setProperty(int i, Object o) {
-
     }
 
     @Override
-    public void getPropertyInfo(int i, Hashtable hashtable, PropertyInfo propertyInfo) {
-
+    public void getPropertyInfo(int i, java.util.Hashtable hashtable,
+                                org.ksoap2.serialization.PropertyInfo propertyInfo) {
     }
 
 }

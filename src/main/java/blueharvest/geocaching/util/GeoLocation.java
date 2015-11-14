@@ -17,6 +17,7 @@ package blueharvest.geocaching.util;
  * @author Jan Philip Matuschek
  * @version 22 September 2010
  */
+@SuppressWarnings("ALL")
 public class GeoLocation {
 
     private double radLat;  // latitude in radians

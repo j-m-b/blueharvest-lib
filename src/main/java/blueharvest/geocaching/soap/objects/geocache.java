@@ -34,7 +34,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
     public geocache(java.util.UUID id, java.util.Date anniversary,
                     String name, String description, int difficulty,
                     int size, int terrain, int status, int type, user creator,
-                    @SuppressWarnings("null") /*@com.sun.istack.internal.Nullable*/
+                    @SuppressWarnings({"null", "SameParameterValue"})
                             java.util.ArrayList<blueharvest.geocaching.concepts.image> images,
                     blueharvest.geocaching.concepts.location location,
                     blueharvest.geocaching.concepts.logbook logbook) {
@@ -186,10 +186,12 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
         }
     }
 
+    @SuppressWarnings("UnusedParameters")
     public static boolean update(geocache g) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
+    @SuppressWarnings("UnusedParameters")
     public static boolean delete(java.util.UUID id) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
@@ -515,10 +517,11 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
          * geocaches related to a user are either those found or favorites
          * todo: implement ... maybe this could be stored on the user's device
          *
-         * @param userid id of the user the geoaches are related to
+         * @param userid id of the user the geocaches are related to
          * @since 2015-11-14
          */
-        private geocaches(java.util.UUID userid) {
+        @SuppressWarnings("UnusedParameters")
+        public geocaches(java.util.UUID userid) {
 
         }
 

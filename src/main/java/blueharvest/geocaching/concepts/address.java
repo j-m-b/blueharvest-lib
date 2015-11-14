@@ -20,6 +20,7 @@ public abstract class address {
      * @param postalcode the postal code of the address
      * @since 2015-10-13
      */
+    @SuppressWarnings("unused")
     protected address(String street, String city, region region, String postalcode) {
         this.street = street;
         this.city = city;

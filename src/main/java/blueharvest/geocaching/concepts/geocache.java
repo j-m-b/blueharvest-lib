@@ -22,7 +22,6 @@ public abstract class geocache {
 
     /**
      * <h3>constructor</h3>
-     * instantiates this
      *
      * @param id          identifier
      * @param anniversary date which this was created
