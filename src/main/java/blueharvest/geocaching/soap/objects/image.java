@@ -29,12 +29,12 @@ public class image extends blueharvest.geocaching.concepts.image {
      * <h3>gets an image</h3>
      *
      * @param id id of the image
-     * @return image
+     * @return image or null
      * @see <a href="https://blueharvestgeo.com/WebServices/ImageService.asmx?op=GetImage">GetImage</a>
      * @since 2015-11-09
      */
     public static image get(java.util.UUID id) {
-        image i;
+        image i = null;
         org.ksoap2.serialization.SoapObject request
                 = new blueharvest.geocaching.soap.request("GetImage");
         // parameters
@@ -48,9 +48,11 @@ public class image extends blueharvest.geocaching.concepts.image {
             transport.call("http://blueharvestgeo.com/webservices/GetImage", envelope);
             org.ksoap2.serialization.SoapObject response
                     = (org.ksoap2.serialization.SoapObject) envelope.getResponse();
-            i = new image(java.util.UUID.fromString(response.getProperty("id").toString()),
-                    java.net.URI.create(response.getProperty("uri").toString()),
-                    response.getProperty("caption").toString(), null);
+            if (response != null) {
+                i = new image(java.util.UUID.fromString(response.getProperty("id").toString()),
+                        java.net.URI.create(response.getProperty("uri").toString()),
+                        response.getProperty("caption").toString(), null);
+            }
         } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
             throw new RuntimeException(ex.getMessage());
         }
@@ -61,7 +63,7 @@ public class image extends blueharvest.geocaching.concepts.image {
      * <h3>inserts an image</h3>
      *
      * @param i (i)mage
-     * @return true/false depending on whether the image was inserted
+     * @return true/false depending on whether the insert was successful
      * @see <a href="https://blueharvestgeo.com/WebServices/ImageService.asmx?op=InsertImage">
      * InsertImage</a>
      * @since 2015-11-09
@@ -75,7 +77,6 @@ public class image extends blueharvest.geocaching.concepts.image {
         image.addProperty("uri", i.getUri().toString());
         image.addProperty("caption", i.getCaption());
         request.addSoapObject(image);
-
         // serializable way
         /* blueharvest.geocaching.soap.objects.image.serialized j
                 = new blueharvest.geocaching.soap.objects.image.serialized();
@@ -86,14 +87,11 @@ public class image extends blueharvest.geocaching.concepts.image {
         pi.setValue(i);
         pi.setType("image");
         request.addProperty(pi);*/
-
         org.ksoap2.serialization.SoapSerializationEnvelope envelope
                 = new blueharvest.geocaching.soap.envelope();
-        envelope.implicitTypes = true;
-        envelope.setAddAdornments(false); // prefixing
         envelope.setOutputSoapObject(request);
         org.ksoap2.transport.HttpTransportSE transport
-                = new org.ksoap2.transport.HttpTransportSE(url); // ?wsdl
+                = new org.ksoap2.transport.HttpTransportSE(url);
         //transport.debug = true; // testing
         try {
             transport.call("http://blueharvestgeo.com/webservices/InsertImage", envelope);
@@ -101,23 +99,10 @@ public class image extends blueharvest.geocaching.concepts.image {
                     = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
             //System.out.println(transport.requestDump); // testing
             //System.out.println(transport.responseDump); // testing
-            return Boolean.parseBoolean(response.toString());
-        } catch (org.ksoap2.SoapFault ex) {
-            throw new RuntimeException(
-                    "soap fault:" + ex.getMessage() + " ... " + transport.requestDump);
-        } catch (org.ksoap2.transport.HttpResponseException ex) {
-            throw new RuntimeException(
-                    "http response exception:" + ex.getMessage() + " ... " + transport.requestDump);
-        } catch (java.io.IOException ex) {
-            throw new RuntimeException(
-                    "io exception:" + ex.getMessage() + " ... " + transport.requestDump);
-        } catch (org.xmlpull.v1.XmlPullParserException ex) {
-            throw new RuntimeException(
-                    "xml pull parser exception:" + ex.getMessage() + " ... " + transport.requestDump);
-        } catch (java.lang.Exception ex) {
-            throw new RuntimeException(
-                    "exception:" + ex.getLocalizedMessage() + " ... " + transport.requestDump);
-        }
+            return response != null && Boolean.parseBoolean(response.toString());
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
+            throw new RuntimeException(ex.getMessage());
+        } // org.ksoap2.SoapFault and org.ksoap2.transport.HttpResponseException
     }
 
     /**
@@ -204,7 +189,7 @@ public class image extends blueharvest.geocaching.concepts.image {
      */
     public static class serialized implements org.ksoap2.serialization.KvmSerializable {
 
-        public java.util.UUID id; // this could be a problem
+        public java.util.UUID id; // String?
         public String uri; // public java.net.URI uri;
         public String caption;
 

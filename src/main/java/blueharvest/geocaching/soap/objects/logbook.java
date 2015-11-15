@@ -44,13 +44,13 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
         envelope.setOutputSoapObject(request);
         org.ksoap2.transport.HttpTransportSE transport
                 = new org.ksoap2.transport.HttpTransportSE(url);
-        transport.debug = true; // todo: testing
+        //transport.debug = true; // todo: testing
         try {
             transport.call("http://blueharvestgeo.com/webservices/GetLogbook", envelope);
             org.ksoap2.serialization.SoapObject response
                     = (org.ksoap2.serialization.SoapObject) envelope.getResponse();
             //System.out.println(transport.requestDump); // testing
-            System.out.println(transport.responseDump); // testing
+            //System.out.println(transport.responseDump); // testing
             if (response.getPropertyCount() > 0) {
                 l = new blueharvest.geocaching.soap.objects.logbook(id, null,
                         new java.util.ArrayList<blueharvest.geocaching.concepts.logbook.entry>());
@@ -71,9 +71,7 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
             }
             //child.getProperty("uri").toString(); // todo: either use or refactor
         } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException | java.text.ParseException ex) {
-            // todo: do something
-            //System.out.println(ex.getMessage());
-            //throw new RuntimeException(ex.getMessage());
+            throw new RuntimeException(ex.getMessage());
         }
         return l;
     }
@@ -95,42 +93,27 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
         org.ksoap2.serialization.SoapObject image
                 = new org.ksoap2.serialization.SoapObject(ns, "i");
         request.addSoapObject(image);
-
         org.ksoap2.serialization.SoapSerializationEnvelope envelope
                 = new blueharvest.geocaching.soap.envelope();
-        envelope.implicitTypes = true;
-        envelope.setAddAdornments(false); // prefixing
         envelope.setOutputSoapObject(request);
         org.ksoap2.transport.HttpTransportSE transport
-                = new org.ksoap2.transport.HttpTransportSE(url); // ?wsdl
-        transport.debug = true; // testing
+                = new org.ksoap2.transport.HttpTransportSE(url);
+        //transport.debug = true; // testing
         try {
             transport.call("http://blueharvestgeo.com/webservices/InsertLogbook", envelope);
             org.ksoap2.serialization.SoapPrimitive response
                     = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
             //l.setRequest(transport.requestDump); // testing
             //l.setResponse(transport.responseDump); // testing
-            return Boolean.parseBoolean(response.toString());
-        } catch (org.ksoap2.SoapFault ex) {
-            throw new RuntimeException(
-                    "soap fault:" + ex.getMessage() + " ... " + transport.requestDump);
-        } catch (org.ksoap2.transport.HttpResponseException ex) {
-            throw new RuntimeException(
-                    "http response exception:" + ex.getMessage() + " ... " + transport.requestDump);
-        } catch (java.io.IOException ex) {
-            throw new RuntimeException(
-                    "io exception:" + ex.getMessage() + " ... " + transport.requestDump);
-        } catch (org.xmlpull.v1.XmlPullParserException ex) {
-            throw new RuntimeException(
-                    "xml pull parser exception:" + ex.getMessage() + " ... " + transport.requestDump);
-        } catch (java.lang.Exception ex) {
-            throw new RuntimeException(
-                    "exception:" + ex.getLocalizedMessage() + " ... " + transport.requestDump);
-        }
+            return response != null && Boolean.parseBoolean(response.toString());
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
+            throw new RuntimeException(ex.getMessage());
+        } // org.ksoap2.SoapFault, org.ksoap2.transport.HttpResponseException, java.lang.Exception
     }
 
     /**
      * <h3>updates a logbook</h3>
+     * // todo: implementation
      *
      * @param l (l)ogbook
      * @return true/false depending on whether the update was successful
@@ -264,33 +247,18 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
             request.addProperty("logbookid", logbookid.toString());
             org.ksoap2.serialization.SoapSerializationEnvelope envelope
                     = new blueharvest.geocaching.soap.envelope();
-            envelope.implicitTypes = true;
-            envelope.setAddAdornments(false); // prefixing
             envelope.setOutputSoapObject(request);
             org.ksoap2.transport.HttpTransportSE transport
                     = new org.ksoap2.transport.HttpTransportSE(url);
-            transport.debug = true; // todo: testing
+            //transport.debug = true; // testing
             try {
                 transport.call("http://blueharvestgeo.com/webservices/InsertLogbookEntry", envelope);
                 org.ksoap2.serialization.SoapPrimitive response
                         = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
-                return Boolean.parseBoolean(response.toString());
-            } catch (org.ksoap2.SoapFault ex) {
-                throw new RuntimeException(
-                        "soap fault:" + ex.getMessage() + " ... " + transport.requestDump);
-            } catch (org.ksoap2.transport.HttpResponseException ex) {
-                throw new RuntimeException(
-                        "http response exception:" + ex.getMessage() + " ... " + transport.requestDump);
-            } catch (java.io.IOException ex) {
-                throw new RuntimeException(
-                        "io exception:" + ex.getMessage() + " ... " + transport.requestDump);
-            } catch (org.xmlpull.v1.XmlPullParserException ex) {
-                throw new RuntimeException(
-                        "xml pull parser exception:" + ex.getMessage() + " ... " + transport.requestDump);
-            } catch (java.lang.Exception ex) {
-                throw new RuntimeException(
-                        "exception:" + ex.getLocalizedMessage() + " ... " + transport.requestDump);
-            }
+                return response != null && Boolean.parseBoolean(response.toString());
+            } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
+                throw new RuntimeException(ex.getMessage());
+            } // java.lang.Exception, org.ksoap2.SoapFault, org.ksoap2.transport.HttpResponseException
         }
 
         /**

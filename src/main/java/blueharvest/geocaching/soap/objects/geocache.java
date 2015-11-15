@@ -10,7 +10,6 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
 
     /**
      * <h3>constructor</h3>
-     * instantiates this
      *
      * @param id          identifier
      * @param anniversary date which this was created
@@ -35,7 +34,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                     String name, String description, int difficulty,
                     int size, int terrain, int status, int type, user creator,
                     @SuppressWarnings({"null", "SameParameterValue"})
-                            java.util.ArrayList<blueharvest.geocaching.concepts.image> images,
+                    java.util.ArrayList<blueharvest.geocaching.concepts.image> images,
                     blueharvest.geocaching.concepts.location location,
                     blueharvest.geocaching.concepts.logbook logbook) {
         super(id, anniversary, name, description, difficulty, size,
@@ -46,13 +45,13 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
      * <h3>gets a geocache</h3>
      *
      * @param id id
-     * @return a geocache or null
+     * @return a geocache or null (geocache does not exist)
      * @see <a href="https://blueharvestgeo.com/WebServices/GeocacheService.asmx?op=GetGeocache">
      * GetGeocache</a>
      * @since 2015-11-10
      */
     public static geocache get(java.util.UUID id) {
-        geocache g;
+        geocache g = null;
         org.ksoap2.serialization.SoapObject request
                 = new blueharvest.geocaching.soap.request("GetGeocache");
         // parameters
@@ -66,23 +65,28 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
             transport.call("http://blueharvestgeo.com/webservices/GetGeocache", envelope);
             org.ksoap2.serialization.SoapObject response
                     = (org.ksoap2.serialization.SoapObject) envelope.getResponse();
-            id = java.util.UUID.fromString(response.getProperty("id").toString());
-            java.util.Date anniversary = new java.text.SimpleDateFormat(
-                    "yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US).parse(
-                    response.getProperty("anniversary").toString());
-            String name = response.getProperty("name").toString();
-            String description = response.getProperty("description").toString();
-            int difficulty = Integer.valueOf(response.getProperty("difficulty").toString());
-            int terrain = Integer.valueOf(response.getProperty("terrain").toString());
-            int size = Integer.valueOf(response.getProperty("size").toString());
-            int status = Integer.valueOf(response.getProperty("status").toString());
-            int type = Integer.valueOf(response.getProperty("type").toString());
-            g = new blueharvest.geocaching.soap.objects.geocache(id, anniversary,
-                    name, description, difficulty, terrain, size, status, type,
-                    getUser((org.ksoap2.serialization.SoapObject) response.getProperty("user")),
-                    null, // todo: images
-                    getLocation((org.ksoap2.serialization.SoapObject) response.getProperty("location")),
-                    getLogbook((org.ksoap2.serialization.SoapObject) response.getProperty("logbook")));
+            if (response != null) {
+                id = java.util.UUID.fromString(response.getProperty("id").toString());
+                java.util.Date anniversary = new java.text.SimpleDateFormat(
+                        "yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US).parse(
+                        response.getProperty("anniversary").toString());
+                String name = response.getProperty("name").toString();
+                String description = response.getProperty("description").toString();
+                int difficulty = Integer.valueOf(response.getProperty("difficulty").toString());
+                int terrain = Integer.valueOf(response.getProperty("terrain").toString());
+                int size = Integer.valueOf(response.getProperty("size").toString());
+                int status = Integer.valueOf(response.getProperty("status").toString());
+                int type = Integer.valueOf(response.getProperty("type").toString());
+                g = new blueharvest.geocaching.soap.objects.geocache(id, anniversary,
+                        name, description, difficulty, terrain, size, status, type,
+                        getUser((org.ksoap2.serialization.SoapObject)
+                                response.getProperty("user")),
+                        null, // todo: images
+                        getLocation((org.ksoap2.serialization.SoapObject)
+                                response.getProperty("location")),
+                        getLogbook((org.ksoap2.serialization.SoapObject)
+                                response.getProperty("logbook")));
+            }
         } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException | java.text.ParseException ex) {
             throw new RuntimeException(ex.getMessage());
         }
@@ -163,8 +167,6 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
         blueharvest.geocaching.soap.objects.marshals.MarshalDouble mdbl
                 = new blueharvest.geocaching.soap.objects.marshals.MarshalDouble();
         mdbl.register(envelope);
-        envelope.implicitTypes = true;
-        envelope.setAddAdornments(false); // prefixing
         envelope.setOutputSoapObject(request);
         org.ksoap2.transport.HttpTransportSE transport
                 = new org.ksoap2.transport.HttpTransportSE(url);
@@ -175,14 +177,11 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                     = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
             //System.out.println(transport.requestDump); // testing
             //System.out.println(transport.responseDump); // testing
-            return Boolean.parseBoolean(response.toString());
-        } catch (org.ksoap2.SoapFault ex) {
+            return response != null && Boolean.parseBoolean(response.toString());
+        } catch (java.io.IOException ex) { // org.ksoap2.SoapFault and org.ksoap2.transport.HttpResponseException, too
             throw new RuntimeException(ex.getMessage());
-        } catch (org.ksoap2.transport.HttpResponseException | org.xmlpull.v1.XmlPullParserException ex) {
+        } catch (org.xmlpull.v1.XmlPullParserException ex) {
             throw new RuntimeException(ex.getMessage());
-        } catch (java.io.IOException ex) {
-            throw new RuntimeException("java.io.IOException " + ex.getMessage());
-            //} catch (java.lang.Exception ex) {
         }
     }
 
@@ -349,12 +348,10 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
             blueharvest.geocaching.soap.objects.marshals.MarshalDouble md
                     = new blueharvest.geocaching.soap.objects.marshals.MarshalDouble();
             md.register(envelope);
-            envelope.implicitTypes = true;
-            envelope.setAddAdornments(false); // prefixing
             envelope.setOutputSoapObject(request);
             org.ksoap2.transport.HttpTransportSE transport
                     = new org.ksoap2.transport.HttpTransportSE(url);
-            transport.debug = true; // testing
+            //transport.debug = true; // testing
             try {
                 transport.call("http://blueharvestgeo.com/webservices/GetGeocachesWithinDistance",
                         envelope);
@@ -398,7 +395,6 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                             = java.util.UUID.fromString(child.getProperty("logbookid").toString()); // (n/a)*/
                 }
             } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
-                //System.out.println(transport.responseDump);
                 throw new RuntimeException(ex.getMessage());
             }
         }
@@ -458,12 +454,10 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
             blueharvest.geocaching.soap.objects.marshals.MarshalDouble md
                     = new blueharvest.geocaching.soap.objects.marshals.MarshalDouble();
             md.register(envelope);
-            envelope.implicitTypes = true;
-            envelope.setAddAdornments(false); // prefixing
             envelope.setOutputSoapObject(request);
             org.ksoap2.transport.HttpTransportSE transport
                     = new org.ksoap2.transport.HttpTransportSE(url);
-            transport.debug = true; // testing
+            //transport.debug = true; // testing
             try {
                 transport.call("http://blueharvestgeo.com/webservices/GetGeocachesWithinDistance",
                         envelope);
@@ -507,7 +501,6 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                             = java.util.UUID.fromString(child.getProperty("logbookid").toString()); // (n/a)*/
                 }
             } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
-                //System.out.println(transport.responseDump);
                 throw new RuntimeException(ex.getMessage());
             }
         }
@@ -522,7 +515,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
          */
         @SuppressWarnings("UnusedParameters")
         public geocaches(java.util.UUID userid) {
-
+            throw new java.lang.UnsupportedOperationException("Not supported.");
         }
 
     }

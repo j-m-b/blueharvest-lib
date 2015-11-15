@@ -32,7 +32,7 @@ public class database {
             transport.call("http://blueharvestgeo.com/webservices/DeleteAll", envelope);
             org.ksoap2.serialization.SoapPrimitive response
                     = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
-            return Boolean.parseBoolean(response.toString());
+            return response != null && Boolean.parseBoolean(response.toString());
         } catch (java.io.IOException ex) {
             // todo: do something
             return false;

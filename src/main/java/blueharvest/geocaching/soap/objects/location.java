@@ -33,13 +33,13 @@ public class location extends blueharvest.geocaching.concepts.location {
      * <h3>gets a location</h3>
      *
      * @param id id
-     * @return location
+     * @return location or null
      * @see <a href="https://blueharvestgeo.com/WebServices/LocationService.asmx?op=GetLocation">
      * GetLocation</a>
      * @since 2015-11-09
      */
     public static location get(java.util.UUID id) {
-        location l;
+        location l = null;
         org.ksoap2.serialization.SoapObject request
                 = new blueharvest.geocaching.soap.request("GetLocation");
         // parameters
@@ -53,10 +53,11 @@ public class location extends blueharvest.geocaching.concepts.location {
             transport.call("http://blueharvestgeo.com/webservices/GetLocation", envelope);
             org.ksoap2.serialization.SoapObject response
                     = (org.ksoap2.serialization.SoapObject) envelope.getResponse();
-            l = new location(java.util.UUID.fromString(response.getProperty("id").toString()), null,
-                    Double.parseDouble(response.getProperty("latitude").toString()),
-                    Double.parseDouble(response.getProperty("longitude").toString()),
-                    Integer.parseInt(response.getProperty("altitude").toString()), null);
+            if (response != null)
+                l = new location(java.util.UUID.fromString(response.getProperty("id").toString()), null,
+                        Double.parseDouble(response.getProperty("latitude").toString()),
+                        Double.parseDouble(response.getProperty("longitude").toString()),
+                        Integer.parseInt(response.getProperty("altitude").toString()), null);
         } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
             throw new RuntimeException(ex.getMessage());
         }
@@ -75,7 +76,7 @@ public class location extends blueharvest.geocaching.concepts.location {
      * @since 2015-11-09
      */
     public static location get(double latitude, double longitude) {
-        location l;
+        location l = null;
         org.ksoap2.serialization.SoapObject request
                 = new blueharvest.geocaching.soap.request("GetLocationByCoordinates");
         // parameters
@@ -91,14 +92,20 @@ public class location extends blueharvest.geocaching.concepts.location {
         envelope.setOutputSoapObject(request);
         org.ksoap2.transport.HttpTransportSE transport
                 = new org.ksoap2.transport.HttpTransportSE(url);
+        //transport.debug = true; // testing
         try {
             transport.call("http://blueharvestgeo.com/webservices/GetLocationByCoordinates", envelope);
             org.ksoap2.serialization.SoapObject response
                     = (org.ksoap2.serialization.SoapObject) envelope.getResponse();
-            l = new location(java.util.UUID.fromString(response.getProperty("id").toString()), null,
-                    Double.parseDouble(response.getProperty("latitude").toString()),
-                    Double.parseDouble(response.getProperty("longitude").toString()),
-                    Integer.parseInt(response.getProperty("altitude").toString()), null);
+            //System.out.println(transport.requestDump); // testing
+            //System.out.println(transport.responseDump); // testing
+            if (response != null &&
+                    !response.getProperty("id").toString()
+                            .equals("00000000-0000-0000-0000-000000000000"))
+                l = new location(java.util.UUID.fromString(response.getProperty("id").toString()), null,
+                        Double.parseDouble(response.getProperty("latitude").toString()),
+                        Double.parseDouble(response.getProperty("longitude").toString()),
+                        Integer.parseInt(response.getProperty("altitude").toString()), null);
             // todo: address
         } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
             throw new RuntimeException(ex.getMessage());
@@ -137,8 +144,6 @@ public class location extends blueharvest.geocaching.concepts.location {
         blueharvest.geocaching.soap.objects.marshals.MarshalDouble md
                 = new blueharvest.geocaching.soap.objects.marshals.MarshalDouble();
         md.register(envelope);
-        envelope.implicitTypes = true;
-        envelope.setAddAdornments(false); // prefixing
         envelope.setOutputSoapObject(request);
         org.ksoap2.transport.HttpTransportSE transport
                 = new org.ksoap2.transport.HttpTransportSE(url);
@@ -149,23 +154,10 @@ public class location extends blueharvest.geocaching.concepts.location {
                     = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
             //System.out.println(transport.requestDump); // testing
             //System.out.println(transport.responseDump); // testing
-            return Boolean.parseBoolean(response.toString());
-        } catch (org.ksoap2.SoapFault ex) {
-            throw new RuntimeException(
-                    "soap fault:" + ex.getMessage() + " ... " + transport.requestDump);
-        } catch (org.ksoap2.transport.HttpResponseException ex) {
-            throw new RuntimeException(
-                    "http response exception:" + ex.getMessage() + " ... " + transport.requestDump);
-        } catch (java.io.IOException ex) {
-            throw new RuntimeException(
-                    "io exception:" + ex.getMessage() + " ... " + transport.requestDump);
-        } catch (org.xmlpull.v1.XmlPullParserException ex) {
-            throw new RuntimeException(
-                    "xml pull parser exception:" + ex.getMessage() + " ... " + transport.requestDump);
-        } catch (java.lang.Exception ex) {
-            throw new RuntimeException(
-                    "exception:" + ex.getLocalizedMessage() + " ... " + transport.requestDump);
-        }
+            return response != null && Boolean.parseBoolean(response.toString());
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
+            throw new RuntimeException(ex.getMessage());
+        } // org.ksoap2.SoapFault, org.ksoap2.transport.HttpResponseException
     }
 
     /**

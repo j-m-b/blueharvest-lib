@@ -15,7 +15,7 @@ public class role extends blueharvest.geocaching.concepts.role {
      */
     public static class serialized implements org.ksoap2.serialization.KvmSerializable {
 
-        public java.util.UUID id; // this could be a problem
+        public java.util.UUID id;
         public String name;
 
         public serialized() {
