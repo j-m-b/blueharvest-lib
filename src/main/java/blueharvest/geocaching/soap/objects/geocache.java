@@ -13,6 +13,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
      *
      * @param id          identifier
      * @param anniversary date which this was created
+     * @param code        the code for the geocache
      * @param name        the name of this
      * @param description the description of this
      * @param difficulty  how difficult this is
@@ -30,14 +31,14 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
      * @see blueharvest.geocaching.concepts.logbook
      * @since 2015-11-08
      */
-    public geocache(java.util.UUID id, java.util.Date anniversary,
+    public geocache(java.util.UUID id, java.util.Date anniversary, String code,
                     String name, String description, int difficulty,
                     int size, int terrain, int status, int type, user creator,
                     @SuppressWarnings({"null", "SameParameterValue"})
                     java.util.ArrayList<blueharvest.geocaching.concepts.image> images,
                     blueharvest.geocaching.concepts.location location,
                     blueharvest.geocaching.concepts.logbook logbook) {
-        super(id, anniversary, name, description, difficulty, size,
+        super(id, anniversary, code, name, description, difficulty, size,
                 terrain, status, type, creator, images, location, logbook);
     }
 
@@ -70,6 +71,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                 java.util.Date anniversary = new java.text.SimpleDateFormat(
                         "yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US).parse(
                         response.getProperty("anniversary").toString());
+                String code = response.getProperty("code").toString();
                 String name = response.getProperty("name").toString();
                 String description = response.getProperty("description").toString();
                 int difficulty = Integer.valueOf(response.getProperty("difficulty").toString());
@@ -77,7 +79,59 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                 int size = Integer.valueOf(response.getProperty("size").toString());
                 int status = Integer.valueOf(response.getProperty("status").toString());
                 int type = Integer.valueOf(response.getProperty("type").toString());
-                g = new blueharvest.geocaching.soap.objects.geocache(id, anniversary,
+                g = new blueharvest.geocaching.soap.objects.geocache(id, anniversary, code,
+                        name, description, difficulty, terrain, size, status, type,
+                        getUser((org.ksoap2.serialization.SoapObject)
+                                response.getProperty("user")),
+                        null, // todo: images
+                        getLocation((org.ksoap2.serialization.SoapObject)
+                                response.getProperty("location")),
+                        getLogbook((org.ksoap2.serialization.SoapObject)
+                                response.getProperty("logbook")));
+            }
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException | java.text.ParseException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+        return g;
+    }
+
+    /**
+     * <h3>gets a geocache by its code</h3>
+     * @param code the code of the geocache
+     * @return a geocache or null
+     * @since 2015-11-16
+     * @see <a href="https://blueharvestgeo.com/WebServices/GeocacheService.asmx?op=GetGeocacheByCode">
+     * GetGeocache</a>
+     */
+    public static geocache get(String code) {
+        geocache g = null;
+        org.ksoap2.serialization.SoapObject request
+                = new blueharvest.geocaching.soap.request("GetGeocacheByCode");
+        // parameters
+        request.addProperty("code", code);
+        org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                = new blueharvest.geocaching.soap.envelope();
+        envelope.setOutputSoapObject(request);
+        org.ksoap2.transport.HttpTransportSE transport
+                = new org.ksoap2.transport.HttpTransportSE(url);
+        try {
+            transport.call("http://blueharvestgeo.com/webservices/GetGeocacheByCode", envelope);
+            org.ksoap2.serialization.SoapObject response
+                    = (org.ksoap2.serialization.SoapObject) envelope.getResponse();
+            if (response != null) {
+                java.util.UUID id = java.util.UUID.fromString(response.getProperty("id").toString());
+                java.util.Date anniversary = new java.text.SimpleDateFormat(
+                        "yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US).parse(
+                        response.getProperty("anniversary").toString());
+                code = response.getProperty("code").toString();
+                String name = response.getProperty("name").toString();
+                String description = response.getProperty("description").toString();
+                int difficulty = Integer.valueOf(response.getProperty("difficulty").toString());
+                int terrain = Integer.valueOf(response.getProperty("terrain").toString());
+                int size = Integer.valueOf(response.getProperty("size").toString());
+                int status = Integer.valueOf(response.getProperty("status").toString());
+                int type = Integer.valueOf(response.getProperty("type").toString());
+                g = new blueharvest.geocaching.soap.objects.geocache(id, anniversary, code,
                         name, description, difficulty, terrain, size, status, type,
                         getUser((org.ksoap2.serialization.SoapObject)
                                 response.getProperty("user")),
@@ -95,7 +149,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
 
     /**
      * <h3>inserts a geocache</h3>
-     * required: name, description, difficulty, terrain, size, status, type, user.id,
+     * required: code, name, description, difficulty, terrain, size, status, type, user.id,
      * location.latitude, location.longitude, location.altitude req'd;
      * if the location exists by coordinates, then the location will be set to the existing
      * location; otherwise, the location is, too, inserted; the logbook is inserted as well
@@ -115,6 +169,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                 = new org.ksoap2.serialization.SoapObject(ns, "g"); // <g>
         //geocache.addProperty("id", null); // <id>guid</id> (default)
         //geocache.addProperty("anniversary", null); // <anniversary>dateTime</anniversary> (default)
+        geocache.addProperty("code", g.getCode()); // <code>string</name>
         geocache.addProperty("name", g.getName()); // <name>string</name>
         geocache.addProperty("description", g.getDescription()); // <description>string</description>
         geocache.addProperty("difficulty", g.getDifficulty()); // <difficulty>int</difficulty>
@@ -178,11 +233,9 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
             //System.out.println(transport.requestDump); // testing
             //System.out.println(transport.responseDump); // testing
             return response != null && Boolean.parseBoolean(response.toString());
-        } catch (java.io.IOException ex) { // org.ksoap2.SoapFault and org.ksoap2.transport.HttpResponseException, too
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
             throw new RuntimeException(ex.getMessage());
-        } catch (org.xmlpull.v1.XmlPullParserException ex) {
-            throw new RuntimeException(ex.getMessage());
-        }
+        } // org.ksoap2.SoapFault and org.ksoap2.transport.HttpResponseException, too
     }
 
     @SuppressWarnings("UnusedParameters")
@@ -373,6 +426,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                     } catch (java.text.ParseException e) {
                         e.printStackTrace();
                     }
+                    String code = child.getProperty("code").toString();
                     String name = child.getProperty("name").toString();
                     String description = child.getProperty("description").toString();
                     int difficulty = Integer.parseInt(child.getProperty("difficulty").toString());
@@ -380,8 +434,8 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                     int size = Integer.parseInt(child.getProperty("size").toString());
                     int status = Integer.parseInt(child.getProperty("status").toString());
                     int type = Integer.parseInt(child.getProperty("type").toString());
-                    add(new geocache(id, anniversary, name, description, difficulty, size,
-                            terrain, status, type,
+                    add(new geocache(id, anniversary, code, name, description,
+                            difficulty, size, terrain, status, type,
                             getUser((org.ksoap2.serialization.SoapObject) child.getProperty("user")),
                             null, // images
                             getLocation((org.ksoap2.serialization.SoapObject) child.getProperty("location")),
@@ -479,6 +533,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                     } catch (java.text.ParseException e) {
                         e.printStackTrace();
                     }
+                    String code = child.getProperty("code").toString();
                     String name = child.getProperty("name").toString();
                     String description = child.getProperty("description").toString();
                     int difficulty = Integer.parseInt(child.getProperty("difficulty").toString());
@@ -486,7 +541,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                     int size = Integer.parseInt(child.getProperty("size").toString());
                     int status = Integer.parseInt(child.getProperty("status").toString());
                     int type = Integer.parseInt(child.getProperty("type").toString());
-                    add(new geocache(id, anniversary, name, description, difficulty, size,
+                    add(new geocache(id, anniversary, code, name, description, difficulty, size,
                             terrain, status, type,
                             getUser((org.ksoap2.serialization.SoapObject) child.getProperty("user")),
                             null, // images
@@ -529,6 +584,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
 
         public java.util.UUID id; // as a string
         public java.util.Date anniversary; // use marshalling
+        public String code;
         public String name;
         public String description;
         public int difficulty;
@@ -552,26 +608,28 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                 case 1:
                     return anniversary;
                 case 2:
-                    return name;
+                    return code;
                 case 3:
-                    return description;
+                    return name;
                 case 4:
-                    return difficulty;
+                    return description;
                 case 5:
-                    return terrain;
+                    return difficulty;
                 case 6:
-                    return size;
+                    return terrain;
                 case 7:
-                    return status;
+                    return size;
                 case 8:
-                    return type;
+                    return status;
                 case 9:
-                    return creator;
+                    return type;
                 case 10:
-                    return images;
+                    return creator;
                 case 11:
-                    return location;
+                    return images;
                 case 12:
+                    return location;
+                case 13:
                     return logbook;
             }
             return null;
@@ -579,7 +637,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
 
         @Override
         public int getPropertyCount() {
-            return 13;
+            return 14;
         }
 
         @Override
@@ -598,37 +656,40 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                     }
                     break;
                 case 2:
-                    name = o.toString();
+                    code = o.toString();
                     break;
                 case 3:
-                    description = o.toString();
+                    name = o.toString();
                     break;
                 case 4:
-                    difficulty = (int) o;
+                    description = o.toString();
                     break;
                 case 5:
-                    terrain = (int) o;
+                    difficulty = (int) o;
                     break;
                 case 6:
-                    size = (int) o;
+                    terrain = (int) o;
                     break;
                 case 7:
-                    status = (int) o;
+                    size = (int) o;
                     break;
                 case 8:
-                    type = (int) o;
+                    status = (int) o;
                     break;
                 case 9:
-                    creator = (blueharvest.geocaching.soap.objects.user.serialized) o;
+                    type = (int) o;
                     break;
                 case 10:
+                    creator = (blueharvest.geocaching.soap.objects.user.serialized) o;
+                    break;
+                case 11:
                     images = null;
                     // (java.util.ArrayList<blueharvest.geocaching.soap.objects.image.serialized>) o
                     break;
-                case 11:
+                case 12:
                     location = (blueharvest.geocaching.soap.objects.location.serialized) o;
                     break;
-                case 12:
+                case 13:
                     logbook = (blueharvest.geocaching.soap.objects.logbook.serialized) o;
                     break;
                 default:
@@ -650,45 +711,49 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                     break;
                 case 2:
                     propertyInfo.type = org.ksoap2.serialization.PropertyInfo.STRING_CLASS;
-                    propertyInfo.name = "name";
+                    propertyInfo.name = "code";
                     break;
                 case 3:
                     propertyInfo.type = org.ksoap2.serialization.PropertyInfo.STRING_CLASS;
-                    propertyInfo.name = "description";
+                    propertyInfo.name = "name";
                     break;
                 case 4:
-                    propertyInfo.type = org.ksoap2.serialization.PropertyInfo.INTEGER_CLASS;
-                    propertyInfo.name = "difficulty";
+                    propertyInfo.type = org.ksoap2.serialization.PropertyInfo.STRING_CLASS;
+                    propertyInfo.name = "description";
                     break;
                 case 5:
                     propertyInfo.type = org.ksoap2.serialization.PropertyInfo.INTEGER_CLASS;
-                    propertyInfo.name = "terrain";
+                    propertyInfo.name = "difficulty";
                     break;
                 case 6:
                     propertyInfo.type = org.ksoap2.serialization.PropertyInfo.INTEGER_CLASS;
-                    propertyInfo.name = "size";
+                    propertyInfo.name = "terrain";
                     break;
                 case 7:
                     propertyInfo.type = org.ksoap2.serialization.PropertyInfo.INTEGER_CLASS;
-                    propertyInfo.name = "status";
+                    propertyInfo.name = "size";
                     break;
                 case 8:
                     propertyInfo.type = org.ksoap2.serialization.PropertyInfo.INTEGER_CLASS;
-                    propertyInfo.name = "type";
+                    propertyInfo.name = "status";
                     break;
                 case 9:
+                    propertyInfo.type = org.ksoap2.serialization.PropertyInfo.INTEGER_CLASS;
+                    propertyInfo.name = "type";
+                    break;
+                case 10:
                     propertyInfo.type = org.ksoap2.serialization.PropertyInfo.OBJECT_CLASS;
                     propertyInfo.name = "user";
                     break;
-                case 10:
+                case 11:
                     propertyInfo.type = org.ksoap2.serialization.PropertyInfo.VECTOR_CLASS;
                     propertyInfo.name = "images";
                     break;
-                case 11:
+                case 12:
                     propertyInfo.type = org.ksoap2.serialization.PropertyInfo.OBJECT_CLASS;
                     propertyInfo.name = "location";
                     break;
-                case 12:
+                case 13:
                     propertyInfo.type = org.ksoap2.serialization.PropertyInfo.OBJECT_CLASS;
                     propertyInfo.name = "logbook";
                     break;

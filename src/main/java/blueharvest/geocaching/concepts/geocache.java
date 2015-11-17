@@ -8,6 +8,7 @@ public abstract class geocache {
 
     private final java.util.UUID id;
     private final java.util.Date anniversary;
+    private final String code;
     private final String name;
     private final String description;
     private final int difficulty;
@@ -26,6 +27,7 @@ public abstract class geocache {
      * @param id          identifier
      * @param anniversary date which this was created
      * @param name        the name of this
+     * @param code        the geocache code
      * @param description the description of this
      * @param difficulty  how difficult this is
      * @param size        the size of this
@@ -42,12 +44,13 @@ public abstract class geocache {
      * @see blueharvest.geocaching.concepts.logbook
      * @since 2015-11
      */
-    public geocache(java.util.UUID id, java.util.Date anniversary, String name,
+    public geocache(java.util.UUID id, java.util.Date anniversary, String code, String name,
                     String description, int difficulty, int size, int terrain, int status,
                     int type, user creator, java.util.ArrayList<image> images,
                     location location, logbook logbook) {
         this.id = id;
         this.anniversary = anniversary;
+        this.code = code;
         this.name = name;
         this.description = description;
         this.difficulty = difficulty;
@@ -68,6 +71,8 @@ public abstract class geocache {
     public java.util.Date getAnniversary() {
         return anniversary;
     }
+
+    public String getCode() { return code; }
 
     public String getName() {
         return name;

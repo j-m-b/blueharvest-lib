@@ -188,7 +188,7 @@ public abstract class location {
          * @param type latitude or longitude
          * @return string representation of the coordinate
          * (i.e., 40° 26′ 46″ N or 79° 58′ 56″ W)
-         * @since 2015-11-13 Friday the 13th and <a href="http://www.oddday.net/"Odd Day</a>
+         * @since 2015-11-13 Friday the 13th and <a href="http://www.oddday.net/">Odd Day</a>
          * (last one of this century)
          */
         public String toSexigesimal(type type) {

@@ -1,7 +1,5 @@
 package blueharvest.geocaching.soap.objects;
 
-import org.ksoap2.transport.HttpResponseException;
-
 /**
  * @author jmb
  * @since 2015-11-07
@@ -31,9 +29,9 @@ public class user extends blueharvest.geocaching.concepts.user {
      */
     public user(java.util.UUID id, java.util.Date anniversary, String username, String password,
                 java.util.UUID salt, String email, boolean active, boolean locked,
-                @SuppressWarnings("null") /*@com.sun.istack.internal.Nullable*/
+                @SuppressWarnings({"null", "SameParameterValue"}) /*@com.sun.istack.internal.Nullable*/
                         blueharvest.geocaching.concepts.location location,
-                @SuppressWarnings("null") /*@com.sun.istack.internal.Nullable*/
+                @SuppressWarnings({"null", "SameParameterValue"}) /*@com.sun.istack.internal.Nullable*/
                         blueharvest.geocaching.concepts.image image,
                 blueharvest.geocaching.concepts.role role) {
         super(id, anniversary, username, password, salt, email, active, locked,
