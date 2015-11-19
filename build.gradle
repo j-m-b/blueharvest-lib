@@ -1,6 +1,6 @@
 apply plugin: 'java'
 
-version '0.0.2'
+version '0.0.3'
 group 'blueharvest.geocaching'
 
 /* Error:Execution failed for task ':app:preDexDebug' */

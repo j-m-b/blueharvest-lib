@@ -72,7 +72,9 @@ public abstract class geocache {
         return anniversary;
     }
 
-    public String getCode() { return code; }
+    public String getCode() {
+        return code;
+    }
 
     public String getName() {
         return name;
@@ -116,6 +118,13 @@ public abstract class geocache {
 
     public logbook getLogbook() {
         return logbook;
+    }
+
+    /**
+     * @return GEO + random alphanumeric, uppercase string
+     */
+    public static String randomCode() {
+        return "GEO" + java.util.UUID.randomUUID().toString().substring(26).toUpperCase();
     }
 
 }
