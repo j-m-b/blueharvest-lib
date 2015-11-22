@@ -97,11 +97,12 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
 
     /**
      * <h3>gets a geocache by its code</h3>
+     *
      * @param code the code of the geocache
      * @return a geocache or null
-     * @since 2015-11-16
      * @see <a href="https://blueharvestgeo.com/WebServices/GeocacheService.asmx?op=GetGeocacheByCode">
      * GetGeocache</a>
+     * @since 2015-11-16
      */
     public static geocache get(String code) {
         geocache g = null;
@@ -150,7 +151,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
     /**
      * <h3>inserts a geocache</h3>
      * required: code, name, description, difficulty, terrain, size, status, type, user.id,
-     * location.latitude, location.longitude, location.altitude req'd;
+     * location.latitude, location.longitude, location.altitude;
      * if the location exists by coordinates, then the location will be set to the existing
      * location; otherwise, the location is, too, inserted; the logbook is inserted as well
      *
@@ -158,6 +159,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
      * @return true/false depending on success of insert
      * @see <a href="https://blueharvestgeo.com/WebServices/GeocacheService.asmx?op=InsertGeocache">
      * InsertGeocache</a>
+     * @see #insert(String, String, String, int, int, int, int, int, java.util.UUID, double, double, int)
      * @since 2015-11-09
      */
     public static boolean insert(geocache g) {
@@ -236,6 +238,40 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
         } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
             throw new RuntimeException(ex.getMessage());
         } // org.ksoap2.SoapFault and org.ksoap2.transport.HttpResponseException, too
+    }
+
+    /**
+     * <h3>inserts a geocache</h3>
+     *
+     * @param code        code for geocache (i.e., GEO1234567)
+     * @param name        name of a geocache (i.e., "Statue of Liberty")
+     * @param description description of a geocache (i.e., Lorem ipsum ...)
+     * @param difficulty  difficulty of the geocache (integer range from 1 to ?)
+     * @param size        size of the geocache (integer range from 1 to ?)
+     * @param terrain     terrain of the geocache (integer range from 1 to ?)
+     * @param status      status of geocache (integer range from 1 to ?)
+     * @param type        type of the geocache (integer range from 1 to ?)
+     * @param userid      user.id of the creator of the geocache
+     * @param latitude    the latitude of the geocache location
+     * @param longitude   the longitude of the geocache location
+     * @param altitude    the altitude of the geocache location
+     * @return true/false depending on whether the geocache was inserted in storage
+     * @see #insert(geocache)
+     * @since 2015-11-22, 0.0.3
+     */
+    public static boolean insert(String code, String name, String description,
+                                 int difficulty, int size, int terrain, int status,
+                                 int type, java.util.UUID userid, double latitude,
+                                 double longitude, int altitude) {
+        return blueharvest.geocaching.soap.objects.geocache.insert(
+                new blueharvest.geocaching.soap.objects.geocache(null, null, code, name,
+                        description, difficulty, size, terrain, status, type,
+                        new blueharvest.geocaching.soap.objects.user(
+                                userid, null, null, null, null, null,
+                                true, false, null, null, null),
+                        null,
+                        new blueharvest.geocaching.soap.objects.location(
+                                null, name, latitude, longitude, altitude, null), null));
     }
 
     @SuppressWarnings("UnusedParameters")

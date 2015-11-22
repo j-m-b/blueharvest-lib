@@ -218,6 +218,15 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
             super(id, date, title, text, author);
         }
 
+        /**
+         * <h3>gets an instance of a logbook entry</h3>
+         *
+         * @param id id of an entry
+         * @return an entry in a logbook or null
+         * @see <a href="https://blueharvestgeo.com/WebServices/LogbookService.asmx">
+         * todo: web service</a>
+         * @since 2015-11-20
+         */
         @SuppressWarnings("UnusedParameters")
         public static entry get(java.util.UUID id) {
             throw new java.lang.UnsupportedOperationException("Not supported yet.");
@@ -383,6 +392,31 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
                 }
             }
 
+        }
+
+    }
+
+    /**
+     * <h3>entries in a logbook</h3>
+     *
+     * @see java.util.ArrayList
+     * @since 2015-11-20
+     */
+    public static class entries
+            extends java.util.ArrayList<blueharvest.geocaching.concepts.logbook.entry> {
+
+        /**
+         * constructs an array of all the entries for a given logbook
+         * todo: implementation
+         *
+         * @param logbookid
+         * @throws java.lang.UnsupportedOperationException not implemented
+         * @since 2015-11-20
+         * @see <a href="https://blueharvestgeo.com/WebServices/LogbookService.asmx">
+         *     todo: web service</a>
+         */
+        public entries(java.util.UUID logbookid) {
+            throw new java.lang.UnsupportedOperationException("Not supported yet.");
         }
 
     }
