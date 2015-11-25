@@ -411,9 +411,9 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
          *
          * @param logbookid
          * @throws java.lang.UnsupportedOperationException not implemented
-         * @since 2015-11-20
          * @see <a href="https://blueharvestgeo.com/WebServices/LogbookService.asmx">
-         *     todo: web service</a>
+         * todo: web service</a>
+         * @since 2015-11-20
          */
         public entries(java.util.UUID logbookid) {
             throw new java.lang.UnsupportedOperationException("Not supported yet.");

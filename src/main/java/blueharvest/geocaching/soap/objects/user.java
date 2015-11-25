@@ -321,6 +321,34 @@ public class user extends blueharvest.geocaching.concepts.user {
     }
 
     /**
+     * <h3>relates a geocache by id to this user</h3>
+     * todo: implement database, web service, and this
+     *
+     * @param geocacheid geocache identifier
+     * @param found      found/un-found flag
+     * @return true/false depending on whether the user was related to the geocache
+     * @throws java.lang.UnsupportedOperationException not yet supported
+     * @since 2015-11-25
+     */
+    public boolean relateFoundGeocache(java.util.UUID geocacheid, boolean found) {
+        throw new java.lang.UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * <h3>relates a geocache by id to this user</h3>
+     * todo: implement database, web service, and this
+     *
+     * @param geocacheid geocache identifier
+     * @param favorite   favorite/unfavorite flag
+     * @return true/false depending on whether the user was related to the geocache
+     * @throws java.lang.UnsupportedOperationException not yet supported
+     * @since 2015-11-25
+     */
+    public boolean relateFavoriteGeocache(java.util.UUID geocacheid, boolean favorite) {
+        throw new java.lang.UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
      * nested class for serialized object for soap
      *
      * @see <a href="http://seesharpgears.blogspot.com/2010/10/ksoap-android-web-service-tutorial-with.html">

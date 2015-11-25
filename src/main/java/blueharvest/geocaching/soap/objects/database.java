@@ -16,6 +16,7 @@ public class database {
      * @param password password
      * @return true/false depending on whether the delete was successful
      * @since 2015-11
+     * @deprecated no replacement
      */
     public static boolean delete(String username, String password) {
         org.ksoap2.serialization.SoapObject request

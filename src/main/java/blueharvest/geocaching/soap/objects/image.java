@@ -252,4 +252,27 @@ public class image extends blueharvest.geocaching.concepts.image {
 
     }
 
+    /**
+     * <h3>images</h3>
+     *
+     * @see java.util.ArrayList
+     * @since 2015-11-25
+     */
+    public static class images extends java.util.ArrayList<image> {
+
+        /**
+         * <h3>gets an array list of images for a geocache</h3>
+         * todo: implement database, web service and this
+         *
+         * @param geocacheid geocache identifier
+         * @throws java.lang.UnsupportedOperationException not yet supported
+         * @see <a href="https://blueharvestgeo.com/WebServices/ImageService.asmx">
+         * todo: web service</a>
+         * @since 2015-11-25
+         */
+        public images(java.util.UUID geocacheid) {
+            throw new java.lang.UnsupportedOperationException("Not supported yet.");
+        }
+
+    }
 }
