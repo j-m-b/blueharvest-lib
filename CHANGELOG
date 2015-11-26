@@ -1,8 +1,1 @@
-v0.0.3
-* removed unused code
-* added random geocache code
-* added less complex insert geocache
-* setup user favorite/not favorite geocache and array list
-* setup user found/not found geocache and array list
-* setup geocache images
-* deprecate delete all for database
+0.0.4
