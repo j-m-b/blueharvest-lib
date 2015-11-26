@@ -198,7 +198,7 @@ public abstract class location {
             if (type == coordinate.type.latitude) {
                 r += (dd > 0) ? "N" : "S";
             } else if (type == coordinate.type.longitude) {
-                r += (dd > 0) ? "W" : "E";
+                r += (dd > 0) ? "E" : "W";
             }
             return r;
         }
