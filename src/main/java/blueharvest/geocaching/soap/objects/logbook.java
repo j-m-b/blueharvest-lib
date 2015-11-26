@@ -409,7 +409,7 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
          * constructs an array of all the entries for a given logbook
          * todo: implementation
          *
-         * @param logbookid
+         * @param logbookid logbook identifier
          * @throws java.lang.UnsupportedOperationException not implemented
          * @see <a href="https://blueharvestgeo.com/WebServices/LogbookService.asmx">
          * todo: web service</a>
