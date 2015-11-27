@@ -288,6 +288,18 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
     }
 
     /**
+     * <h3>checks whether the geocache exists</h3>
+     *
+     * @param code geocache code
+     * @return true/false depending in whether the geocache exists
+     * @throws java.lang.UnsupportedOperationException not supported yet
+     * @since 2015-11-26
+     */
+    public static boolean exists(String code) {
+        throw new java.lang.UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
      * <h3>gets a user from a ksoap object</h3>
      * the non-serialized way to get a user object from a ksoap object
      *
