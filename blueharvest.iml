@@ -28,6 +28,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="ksoap2-android-assembly-3.5.0-jar-with-dependencies" level="project" />
+    <orderEntry type="library" exported="" name="blueharvest.blueharvest-0.0.4" level="project" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">
