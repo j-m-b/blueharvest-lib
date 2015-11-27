@@ -1,3 +1,2 @@
-2015-11-26
-* added favorite/unfavorite geocache and list of favorite geocaches
-* added found/unfound geocache and list of found geocaches
+v0.0.5
+* setup isFound and isFavorite

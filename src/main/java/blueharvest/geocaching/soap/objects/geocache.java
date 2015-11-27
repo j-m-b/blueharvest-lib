@@ -300,6 +300,68 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
     }
 
     /**
+     * <h3>checks whether the geocache is a user favorite</h3>
+     *
+     * @param geocacheid geocache identifier
+     * @param userid     user identifier
+     * @return true/false depending on whether the geocache is a user favorite
+     * @see <a href="https://blueharvestgeo.com/WebServices/GeocacheService.asmx?op=IsFavorite">
+     * IsFavorite</a>
+     * @since 2015-11-27 Black Friday
+     */
+    public static boolean isFavorite(java.util.UUID geocacheid, java.util.UUID userid) {
+        org.ksoap2.serialization.SoapObject request
+                = new blueharvest.geocaching.soap.request("IsFavorite");
+        // parameters
+        request.addProperty("userid", userid.toString());
+        request.addProperty("geocacheid", geocacheid.toString());
+        org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                = new blueharvest.geocaching.soap.envelope();
+        envelope.setOutputSoapObject(request);
+        org.ksoap2.transport.HttpTransportSE transport
+                = new org.ksoap2.transport.HttpTransportSE(url);
+        try {
+            transport.call("http://blueharvestgeo.com/webservices/IsFavorite", envelope);
+            org.ksoap2.serialization.SoapPrimitive response
+                    = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
+            return Boolean.parseBoolean(response.toString());
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
+     * <h3>checks whether the geocache is found by the user</h3>
+     *
+     * @param geocacheid geocache identifier
+     * @param userid     user identifier
+     * @return true/false depending on whether the geocache is specified as found by the user
+     * @see <a href="https://blueharvestgeo.com/WebServices/GeocacheService.asmx?op=IsFound">
+     * IsFound</a>
+     * @since 2015-11-27 Black Friday
+     */
+    public static boolean isFound(java.util.UUID geocacheid, java.util.UUID userid) {
+        org.ksoap2.serialization.SoapObject request
+                = new blueharvest.geocaching.soap.request("IsFound");
+        // parameters
+        request.addProperty("userid", userid.toString());
+        request.addProperty("geocacheid", geocacheid.toString());
+        org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                = new blueharvest.geocaching.soap.envelope();
+        envelope.setOutputSoapObject(request);
+        org.ksoap2.transport.HttpTransportSE transport
+                = new org.ksoap2.transport.HttpTransportSE(url);
+        try {
+            transport.call("http://blueharvestgeo.com/webservices/IsFound", envelope);
+            org.ksoap2.serialization.SoapPrimitive response
+                    = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
+            return Boolean.parseBoolean(response.toString());
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
      * <h3>gets a user from a ksoap object</h3>
      * the non-serialized way to get a user object from a ksoap object
      *
