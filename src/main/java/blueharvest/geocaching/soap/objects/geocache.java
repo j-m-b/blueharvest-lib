@@ -388,7 +388,11 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
      */
     public static class geocaches extends java.util.ArrayList<geocache> {
 
-        private geocaches() {
+        /**
+         * useful to specify the type of list to instantiate
+         */
+        public enum type {
+            favorite, found
         }
 
         /**
@@ -542,7 +546,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
          * GetGeocachesWithinDistance</a>
          * @see blueharvest.geocaching.util.GeoLocation
          * @since 2015-11-02
-         * @deprecated use {@link #geocaches(double, double, double)}
+         * @deprecated use blueharvest.geocaching.soap.objects.geocache.geocaches(double, double, double)
          */
         public geocaches(double minlatrad, double maxlatrad, double minlngrad,
                          double maxlngrad, double latrad, double lngrad, double distance) {
@@ -617,22 +621,31 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
 
         /**
          * <h3>get geocaches related to a user</h3>
-         * geocaches related to a user that are favorites
+         * geocaches related to a user based on type
          *
          * @param userid id of the user the geocaches are related to
-         * @return a list of geocaches
-         * @throws java.lang.UnsupportedOperationException not yet supported
-         * @see <a href="https://blueharvestgeo.com/WebServices/GeocacheService.asmx">
-         * todo: web service</a>
-         * @since 2015-11-25
+         * @param t      type of relationship between the user and geocaches
+         * @see <a href="https://blueharvestgeo.com/WebServices/GeocacheService.asmx?op=GetFavoriteGeocaches">
+         * GetFavoriteGeocaches</a>
+         * @see <a href="https://blueharvestgeo.com/WebServices/GeocacheService.asmx?op=GetFoundGeocaches">
+         * GetFoundCGeocaches</a>
+         * @see java.util.ArrayList
+         * @since 0.0.4, 2015-11-26 Happy Thanksgiving!
          */
-        @SuppressWarnings("UnusedParameters")
-        public static geocaches getFavorites(java.util.UUID userid) {
-            throw new java.lang.UnsupportedOperationException("Not supported yet.");
-            /*geocaches g = new geocaches();
-            // todo: web service to consume
+        public geocaches(java.util.UUID userid, type t) {
+            String ws; // web service method
+            switch (t) {
+                case favorite:
+                    ws = "GetFavoriteGeocaches";
+                    break;
+                case found:
+                    ws = "GetFoundGeocaches";
+                    break;
+                default:
+                    throw new java.lang.UnsupportedOperationException("user list type needed");
+            }
             org.ksoap2.serialization.SoapObject request
-                    = new blueharvest.geocaching.soap.request("GetFavoriteGeocaches");
+                    = new blueharvest.geocaching.soap.request(ws);
             // parameter
             request.addProperty("userid", userid.toString());
             org.ksoap2.serialization.SoapSerializationEnvelope envelope
@@ -644,17 +657,14 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
             envelope.setOutputSoapObject(request);
             org.ksoap2.transport.HttpTransportSE transport
                     = new org.ksoap2.transport.HttpTransportSE(url);
-            // todo: test and comment out
-            transport.debug = true; // testing
+            //transport.debug = true; // testing
             try {
-                transport.call("http://blueharvestgeo.com/webservices/GetGeocachesWithinDistance",
-                        envelope);
+                transport.call("http://blueharvestgeo.com/webservices/" + ws, envelope);
                 //http://stackoverflow.com/questions/11029205/ksoap2-android-receive-array-of-objects
                 org.ksoap2.serialization.SoapObject response
                         = (org.ksoap2.serialization.SoapObject) envelope.getResponse();
-                // todo: test and comment out
-                System.out.println(transport.requestDump); // testing
-                System.out.println(transport.responseDump); // testing
+                //System.out.println(transport.requestDump); // testing
+                //System.out.println(transport.responseDump); // testing
                 for (int i = 0; i < response.getPropertyCount(); i++) {
                     org.ksoap2.serialization.SoapObject child
                             = (org.ksoap2.serialization.SoapObject) response.getProperty(i);
@@ -676,7 +686,7 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
                     int size = Integer.parseInt(child.getProperty("size").toString());
                     int status = Integer.parseInt(child.getProperty("status").toString());
                     int type = Integer.parseInt(child.getProperty("type").toString());
-                    g.add(new geocache(id, anniversary, code, name, description,
+                    add(new geocache(id, anniversary, code, name, description,
                             difficulty, size, terrain, status, type,
                             getUser((org.ksoap2.serialization.SoapObject) child.getProperty("user")),
                             null, // images
@@ -686,81 +696,6 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
             } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
                 throw new RuntimeException(ex.getMessage());
             }
-            return g;*/
-        }
-
-        /**
-         * <h3>get geocaches related to a user</h3>
-         * geocaches related to a user that are found
-         *
-         * @param userid id of the user the geocaches are related to
-         * @return a list of geocaches
-         * @throws java.lang.UnsupportedOperationException not yet supported
-         * @see <a href="https://blueharvestgeo.com/WebServices/GeocacheService.asmx">
-         * todo: web service</a>
-         * @since 2015-11-25
-         */
-        @SuppressWarnings("UnusedParameters")
-        public static geocaches getFound(java.util.UUID userid) {
-            throw new java.lang.UnsupportedOperationException("Not supported yet.");
-            /*geocaches g = new geocaches();
-            // todo: web service to consume
-            org.ksoap2.serialization.SoapObject request
-                    = new blueharvest.geocaching.soap.request("GetFoundGeocaches");
-            // parameter
-            request.addProperty("userid", userid.toString());
-            org.ksoap2.serialization.SoapSerializationEnvelope envelope
-                    = new blueharvest.geocaching.soap.envelope();
-            // marshal double
-            blueharvest.geocaching.soap.objects.marshals.MarshalDouble md
-                    = new blueharvest.geocaching.soap.objects.marshals.MarshalDouble();
-            md.register(envelope);
-            envelope.setOutputSoapObject(request);
-            org.ksoap2.transport.HttpTransportSE transport
-                    = new org.ksoap2.transport.HttpTransportSE(url);
-            // todo: test and comment out
-            transport.debug = true; // testing
-            try {
-                transport.call("http://blueharvestgeo.com/webservices/GetGeocachesWithinDistance",
-                        envelope);
-                //http://stackoverflow.com/questions/11029205/ksoap2-android-receive-array-of-objects
-                org.ksoap2.serialization.SoapObject response
-                        = (org.ksoap2.serialization.SoapObject) envelope.getResponse();
-                // todo: test and comment out
-                System.out.println(transport.requestDump); // testing
-                System.out.println(transport.responseDump); // testing
-                for (int i = 0; i < response.getPropertyCount(); i++) {
-                    org.ksoap2.serialization.SoapObject child
-                            = (org.ksoap2.serialization.SoapObject) response.getProperty(i);
-                    java.util.UUID id
-                            = java.util.UUID.fromString(child.getProperty("id").toString());
-                    java.util.Date anniversary = null;
-                    try {
-                        anniversary = new java.text.SimpleDateFormat(
-                                "yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US).parse(
-                                child.getProperty("anniversary").toString());
-                    } catch (java.text.ParseException e) {
-                        e.printStackTrace();
-                    }
-                    String code = child.getProperty("code").toString();
-                    String name = child.getProperty("name").toString();
-                    String description = child.getProperty("description").toString();
-                    int difficulty = Integer.parseInt(child.getProperty("difficulty").toString());
-                    int terrain = Integer.parseInt(child.getProperty("terrain").toString());
-                    int size = Integer.parseInt(child.getProperty("size").toString());
-                    int status = Integer.parseInt(child.getProperty("status").toString());
-                    int type = Integer.parseInt(child.getProperty("type").toString());
-                    g.add(new geocache(id, anniversary, code, name, description,
-                            difficulty, size, terrain, status, type,
-                            getUser((org.ksoap2.serialization.SoapObject) child.getProperty("user")),
-                            null, // images
-                            getLocation((org.ksoap2.serialization.SoapObject) child.getProperty("location")),
-                            getLogbook((org.ksoap2.serialization.SoapObject) child.getProperty("logbook"))));
-                }
-            } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
-                throw new RuntimeException(ex.getMessage());
-            }
-            return g;*/
         }
 
     }

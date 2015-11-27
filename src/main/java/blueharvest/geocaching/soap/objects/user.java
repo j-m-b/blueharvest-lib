@@ -82,7 +82,6 @@ public class user extends blueharvest.geocaching.concepts.user {
                                         .getProperty("name").toString()));
         } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException |
                 java.text.ParseException | java.lang.NullPointerException ex) {
-            // todo: handle exceptions
             throw new RuntimeException(ex.getMessage());
         }
         return u;
@@ -177,12 +176,8 @@ public class user extends blueharvest.geocaching.concepts.user {
             org.ksoap2.serialization.SoapPrimitive response
                     = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
             return Boolean.parseBoolean(response.toString());
-        } catch (java.io.IOException ex) {
-            // todo: do something
-            return false;
-        } catch (org.xmlpull.v1.XmlPullParserException ex) {
-            // todo: do something
-            return false;
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
+            throw new RuntimeException(ex.getMessage());
         }
     }
 
@@ -236,7 +231,6 @@ public class user extends blueharvest.geocaching.concepts.user {
                     = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
             //System.out.println(transport.requestDump); // testing
             //System.out.println(transport.responseDump); // testing
-            //return response == null ? false : Boolean.parseBoolean(response.toString());
             return response != null && Boolean.parseBoolean(response.toString());
         } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
             throw new RuntimeException(ex.getMessage());
@@ -322,34 +316,75 @@ public class user extends blueharvest.geocaching.concepts.user {
 
     /**
      * <h3>relates a geocache to a user</h3>
-     * todo: implement database, web service, and this
+     * when found is true, the found relationship is established between a geocache and a user;
+     * when found is false, the found relationship is severed between a geocache and a user;
      *
      * @param userid     user identifier
      * @param geocacheid geocache identifier
      * @param found      found/un-found flag
      * @return true/false depending on whether the user was related to the geocache
-     * @throws java.lang.UnsupportedOperationException not yet supported
-     * @since 2015-11-25
+     * @see <a href="https://blueharvestgeo.com/WebServices/UserService.asmx?op=RelateFoundGeocache">
+     * RelateFoundGeocache</a>
+     * @since 0.0.4, 2015-11-26 Happy Thanksgiving!
      */
     public static boolean relateFoundGeocache(
             java.util.UUID userid, java.util.UUID geocacheid, boolean found) {
-        throw new java.lang.UnsupportedOperationException("Not supported yet.");
+        org.ksoap2.serialization.SoapObject request
+                = new blueharvest.geocaching.soap.request("RelateFoundGeocache");
+        // parameters
+        request.addProperty("userid", userid.toString());
+        request.addProperty("geocacheid", geocacheid.toString());
+        request.addProperty("found", found);
+        org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                = new blueharvest.geocaching.soap.envelope();
+        envelope.setOutputSoapObject(request);
+        org.ksoap2.transport.HttpTransportSE transport
+                = new org.ksoap2.transport.HttpTransportSE(url);
+        try {
+            transport.call("http://blueharvestgeo.com/webservices/RelateFoundGeocache", envelope);
+            org.ksoap2.serialization.SoapPrimitive response
+                    = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
+            return Boolean.parseBoolean(response.toString());
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
     }
 
     /**
      * <h3>relates a geocache to a user</h3>
-     * todo: implement database, web service, and this
+     * when favorite is true, the favorite relationship is established between the geocache and
+     * the user; when favorite is false, the favorite relationship is severed between a
+     * geocache and a user.
      *
      * @param userid     user identifier
      * @param geocacheid geocache identifier
      * @param favorite   favorite/unfavorite flag
      * @return true/false depending on whether the user was related to the geocache
-     * @throws java.lang.UnsupportedOperationException not yet supported
-     * @since 2015-11-25
+     * @see <a href="https://blueharvestgeo.com/WebServices/UserService.asmx?op=RelateFavoriteGeocache">
+     * RelateFavoriteGeocache</a>
+     * @since 0.0.4, 2015-11-26 Happy Thanksgiving!
      */
     public static boolean relateFavoriteGeocache(
             java.util.UUID userid, java.util.UUID geocacheid, boolean favorite) {
-        throw new java.lang.UnsupportedOperationException("Not supported yet.");
+        org.ksoap2.serialization.SoapObject request
+                = new blueharvest.geocaching.soap.request("RelateFavoriteGeocache");
+        // parameters
+        request.addProperty("userid", userid.toString());
+        request.addProperty("geocacheid", geocacheid.toString());
+        request.addProperty("favorite", favorite);
+        org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                = new blueharvest.geocaching.soap.envelope();
+        envelope.setOutputSoapObject(request);
+        org.ksoap2.transport.HttpTransportSE transport
+                = new org.ksoap2.transport.HttpTransportSE(url);
+        try {
+            transport.call("http://blueharvestgeo.com/webservices/RelateFavoriteGeocache", envelope);
+            org.ksoap2.serialization.SoapPrimitive response
+                    = (org.ksoap2.serialization.SoapPrimitive) envelope.getResponse();
+            return Boolean.parseBoolean(response.toString());
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
     }
 
     /**
