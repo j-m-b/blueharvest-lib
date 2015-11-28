@@ -1,2 +1,5 @@
-v0.0.5
-* setup isFound and isFavorite
+since v0.0.5
+(see release draft)
+added get logbook with entries object
+added get logbook entries arraylist object
+added get logbook entry object

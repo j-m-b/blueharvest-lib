@@ -24,19 +24,17 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
 
     /**
      * <h3>gets a logbook</h3>
-     * todo: refactor for completeness, there are a lot of nulls
-     * use at your own risk
      *
-     * @param id id
-     * @return a logbook with entries if there are any
-     * @see <a href="https://blueharvestgeo.com/WebServices/LogbookService.asmx?op=GetLogbook">
-     * GetLogbook</a>
+     * @param id logbook identifier
+     * @return a logbook with entries if there are any or null if none exists
+     * @see <a href="https://blueharvestgeo.com/WebServices/LogbookService.asmx?op=GetLogbookWithEntries">
+     * GetLogbookWithEntries</a>
      * @since 2015-11-11 Veteran's Day
      */
     public static logbook get(java.util.UUID id) {
         logbook l = null;
         org.ksoap2.serialization.SoapObject request
-                = new blueharvest.geocaching.soap.request("GetLogbook");
+                = new blueharvest.geocaching.soap.request("GetLogbookWithEntries");
         // parameters
         request.addProperty("id", id.toString());
         org.ksoap2.serialization.SoapSerializationEnvelope envelope
@@ -44,32 +42,52 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
         envelope.setOutputSoapObject(request);
         org.ksoap2.transport.HttpTransportSE transport
                 = new org.ksoap2.transport.HttpTransportSE(url);
-        //transport.debug = true; // todo: testing
+        //transport.debug = true; // testing
         try {
-            transport.call("http://blueharvestgeo.com/webservices/GetLogbook", envelope);
+            transport.call("http://blueharvestgeo.com/webservices/GetLogbookWithEntries", envelope);
             org.ksoap2.serialization.SoapObject response
                     = (org.ksoap2.serialization.SoapObject) envelope.getResponse();
             //System.out.println(transport.requestDump); // testing
             //System.out.println(transport.responseDump); // testing
-            if (response.getPropertyCount() > 0) {
-                l = new blueharvest.geocaching.soap.objects.logbook(id, null,
-                        new java.util.ArrayList<blueharvest.geocaching.concepts.logbook.entry>());
-                for (int i = 0; i < response.getPropertyCount(); i++) {
-                    org.ksoap2.serialization.SoapObject child
-                            = (org.ksoap2.serialization.SoapObject) response.getProperty(i);
+            if (response != null
+                    && !response.getProperty("id").toString().equals(
+                    "00000000-0000-0000-0000-000000000000")) {
+                l = new blueharvest.geocaching.soap.objects.logbook(
+                        java.util.UUID.fromString(response.getProperty("id").toString()),
+                        new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss",
+                                java.util.Locale.US).parse(
+                                response.getProperty("datetime").toString()),
+                        new entries());
+                org.ksoap2.serialization.SoapObject child = null;
+                int n = 0; // number of entries
+                try { // ksoap throws an exception when the element is absent
+                    child = (org.ksoap2.serialization.SoapObject) response.getProperty("entries");
+                    n = child.getPropertyCount();
+                } catch (java.lang.Exception ex) {
+                    if (!ex.getMessage().contains("illegal property: entries"))
+                        ex.printStackTrace();
+                }
+                for (int i = 0; i < n; i++) {
                     l.getEntries().add(new blueharvest.geocaching.soap.objects.logbook.entry(
-                            java.util.UUID.fromString(child.getProperty("id").toString()),
+                            java.util.UUID.fromString(
+                                    ((org.ksoap2.serialization.SoapObject) child.getProperty(i))
+                                            .getProperty("id").toString()),
                             new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss",
                                     java.util.Locale.US).parse(
-                                    child.getProperty("datetime").toString()),
-                            child.getProperty("title").toString(),
-                            child.getProperty("text").toString(),
+                                    ((org.ksoap2.serialization.SoapObject) child.getProperty(i))
+                                            .getProperty("datetime").toString()),
+                            ((org.ksoap2.serialization.SoapObject) child.getProperty(i))
+                                    .getProperty("title").toString(),
+                            ((org.ksoap2.serialization.SoapObject) child.getProperty(i))
+                                    .getProperty("text").toString(),
                             new blueharvest.geocaching.soap.objects.user(null, null,
-                                    child.getProperty("username").toString(),
-                                    null, null, null, false, false, null, null, null))); // todo: refactor
+                                    ((org.ksoap2.serialization.SoapObject) child.getProperty(i))
+                                            .getProperty("username").toString(),
+                                    null, null, null, false, false, null, null, null)));
                 }
             }
-            //child.getProperty("uri").toString(); // todo: either use or refactor
+            // ((org.ksoap2.serialization.SoapObject) child.getProperty(i))
+            // .getProperty("url").toString(); // todo: either use or refactor
         } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException | java.text.ParseException ex) {
             throw new RuntimeException(ex.getMessage());
         }
@@ -113,7 +131,7 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
 
     /**
      * <h3>updates a logbook</h3>
-     * // todo: implementation
+     * todo: implementation
      *
      * @param l (l)ogbook
      * @return true/false depending on whether the update was successful
@@ -223,13 +241,46 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
          *
          * @param id id of an entry
          * @return an entry in a logbook or null
-         * @see <a href="https://blueharvestgeo.com/WebServices/LogbookService.asmx">
-         * todo: web service</a>
-         * @since 2015-11-20
+         * @see <a href="https://blueharvestgeo.com/WebServices/LogbookService.asmx?op=GetLogbookEntry">
+         * GetLogbookEntry</a>
+         * @since 0.0.6, 2015-11-20
          */
-        @SuppressWarnings("UnusedParameters")
         public static entry get(java.util.UUID id) {
-            throw new java.lang.UnsupportedOperationException("Not supported yet.");
+            entry e = null;
+            org.ksoap2.serialization.SoapObject request
+                    = new blueharvest.geocaching.soap.request("GetLogbookEntry");
+            // parameters
+            request.addProperty("id", id.toString());
+            org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                    = new blueharvest.geocaching.soap.envelope();
+            envelope.setOutputSoapObject(request);
+            org.ksoap2.transport.HttpTransportSE transport
+                    = new org.ksoap2.transport.HttpTransportSE(url);
+            //transport.debug = true; // testing
+            try {
+                transport.call("http://blueharvestgeo.com/webservices/GetLogbookEntry", envelope);
+                org.ksoap2.serialization.SoapObject response
+                        = (org.ksoap2.serialization.SoapObject) envelope.getResponse();
+                //System.out.println(transport.requestDump); // testing
+                //System.out.println(transport.responseDump); // testing
+                if (response != null
+                        && !response.getProperty("id").toString().equals(
+                        "00000000-0000-0000-0000-000000000000")) {
+                    e = new blueharvest.geocaching.soap.objects.logbook.entry(
+                            java.util.UUID.fromString(response.getProperty("id").toString()),
+                            new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss",
+                                    java.util.Locale.US).parse(
+                                    response.getProperty("datetime").toString()),
+                            response.getProperty("title").toString(),
+                            response.getProperty("text").toString(),
+                            new blueharvest.geocaching.soap.objects.user(null, null,
+                                    response.getProperty("username").toString(),
+                                    null, null, null, false, false, null, null, null));
+                }
+            } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException | java.text.ParseException ex) {
+                throw new RuntimeException(ex.getMessage());
+            }
+            return e;
         }
 
         /**
@@ -405,18 +456,54 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
     public static class entries
             extends java.util.ArrayList<blueharvest.geocaching.concepts.logbook.entry> {
 
+        private entries() {
+        }
+
         /**
          * constructs an array of all the entries for a given logbook
-         * todo: implementation
          *
          * @param logbookid logbook identifier
-         * @throws java.lang.UnsupportedOperationException not implemented
-         * @see <a href="https://blueharvestgeo.com/WebServices/LogbookService.asmx">
-         * todo: web service</a>
-         * @since 2015-11-20
+         * @see <a href="https://blueharvestgeo.com/WebServices/LogbookService.asmx?op=GetLogbookEntries">
+         * GetLogbookEntries</a>
+         * @since 2015-11-27
          */
         public entries(java.util.UUID logbookid) {
-            throw new java.lang.UnsupportedOperationException("Not supported yet.");
+            org.ksoap2.serialization.SoapObject request
+                    = new blueharvest.geocaching.soap.request("GetLogbookEntries");
+            // parameters
+            request.addProperty("logbookid", logbookid.toString());
+            org.ksoap2.serialization.SoapSerializationEnvelope envelope
+                    = new blueharvest.geocaching.soap.envelope();
+            envelope.setOutputSoapObject(request);
+            org.ksoap2.transport.HttpTransportSE transport
+                    = new org.ksoap2.transport.HttpTransportSE(url);
+            //transport.debug = true; // todo: testing
+            try {
+                transport.call("http://blueharvestgeo.com/webservices/GetLogbookEntries", envelope);
+                org.ksoap2.serialization.SoapObject response
+                        = (org.ksoap2.serialization.SoapObject) envelope.getResponse();
+                //System.out.println(transport.requestDump); // testing
+                //System.out.println(transport.responseDump); // testing
+                if (response.getPropertyCount() > 0) {
+                    for (int i = 0; i < response.getPropertyCount(); i++) {
+                        org.ksoap2.serialization.SoapObject child
+                                = (org.ksoap2.serialization.SoapObject) response.getProperty(i);
+                        add(new blueharvest.geocaching.soap.objects.logbook.entry(
+                                java.util.UUID.fromString(child.getProperty("id").toString()),
+                                new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss",
+                                        java.util.Locale.US).parse(
+                                        child.getProperty("datetime").toString()),
+                                child.getProperty("title").toString(),
+                                child.getProperty("text").toString(),
+                                new blueharvest.geocaching.soap.objects.user(null, null,
+                                        child.getProperty("username").toString(),
+                                        null, null, null, false, false, null, null, null))); // todo: refactor
+                    }
+                }
+                //child.getProperty("uri").toString(); // todo: either use or refactor
+            } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException | java.text.ParseException ex) {
+                throw new RuntimeException(ex.getMessage());
+            }
         }
 
     }
