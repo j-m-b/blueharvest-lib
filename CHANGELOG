@@ -1,5 +1,8 @@
-since v0.0.5
-(see release draft)
-added get logbook with entries object
-added get logbook entries arraylist object
-added get logbook entry object
+2015-12-03
+----------
+* added parameter to coordinate constructor; this change effects
+the location attribute latitude and longitude (since changed as well)
+* added exception to coordinate constructor when validation of the
+coordinate l is not within range; latitude φ {-90 > φ > 90}, longitude λ {-180 > λ > 180}
+* added test directory with junit testing support
+* added boundary testing of concepts.location.isValid(double, type)

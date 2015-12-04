@@ -29,8 +29,8 @@ public abstract class location {
                     double longitude, int altitude, address address) {
         this.id = id;
         this.name = name;
-        this.latitude = new coordinate(latitude);
-        this.longitude = new coordinate(longitude);
+        this.latitude = new coordinate(latitude, coordinate.type.latitude);
+        this.longitude = new coordinate(longitude, coordinate.type.longitude);
         this.altitude = altitude;
         this.address = address;
     }
@@ -108,6 +108,7 @@ public abstract class location {
         public enum type {latitude, longitude}
 
         private final double dd; // (d)ecimal (d)egrees
+        private final type t; // type (latitude or longitude)
         private final int d; // (d)egree
         private final int m; // (m)inute
         private final double s; // (s)econd
@@ -115,16 +116,38 @@ public abstract class location {
         /**
          * <h3>constructor</h3>
          *
-         * @param l (l)atitude or (l)ongitude in decimal degrees
+         * @param l coordinate in decimal degrees
+         * @param t type of coordinate (latitude φ or longitude λ)
+         * @throws java.lang.IllegalArgumentException if the value of <code>l</code>
+         *                                            is not within range
          * @see <a href="https://en.wikipedia.org/wiki/Geographic_coordinate_conversion">
          * Geographic Coordinate Conversion</a>
+         * @see #isValid(double, blueharvest.geocaching.concepts.location.coordinate.type)
          * @since 2015-10-23
          */
-        public coordinate(double l) {
+        public coordinate(double l, type t) {
             dd = l;
+            this.t = t;
+            if (!isValid(l, t)) throw new java.lang.IllegalArgumentException(
+                    String.valueOf(l) + " is not within range.");
             d = (int) Math.floor(Math.abs(l));
             m = (int) Math.floor((Math.abs(l) - d) * 60d);
             s = (Math.abs(l) - d - (double) m / 60d) * 3600;
+        }
+
+        /**
+         * <h3>validates coordinate</h3>
+         * latitude φ {-90 < φ < 90}, longitude λ {-180 < λ < 180}
+         *
+         * @param l latitude φ or longitude λ value
+         * @param t type of coordinate (latitude φ or longitude λ)
+         * @return false if the coordinate is out of range, otherwise true
+         * @since 2015-12-03
+         */
+        public static boolean isValid(double l, type t) {
+            if (t == type.latitude && (-90 > l || l > 90)) return false;
+            if (t == type.longitude && (-180 > l || l > 180)) return false;
+            return true;
         }
 
         /**
