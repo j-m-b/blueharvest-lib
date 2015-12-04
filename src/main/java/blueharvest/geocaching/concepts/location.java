@@ -208,20 +208,18 @@ public abstract class location {
         /**
          * <h3>degree minute second representation</h3>
          *
-         * @param type latitude or longitude
          * @return string representation of the coordinate
-         * (i.e., 40° 26′ 46″ N or 79° 58′ 56″ W)
+         * (i.e., 40° 26′ 46″ N, 79° 58′ 56″ W, or 0° 0′ 0″)
          * @since 2015-11-13 Friday the 13th and <a href="http://www.oddday.net/">Odd Day</a>
          * (last one of this century)
          */
-        public String toSexigesimal(type type) {
+        public String toSexigesimal() {
             String r = String.valueOf(d) + "\u00b0 "
                     + String.valueOf(m) + "\' "
-                    + String.valueOf(new java.text.DecimalFormat("#.###").format(s)) + "\" ";
-            if (type == coordinate.type.latitude) {
-                r += (dd > 0) ? "N" : "S";
-            } else if (type == coordinate.type.longitude) {
-                r += (dd > 0) ? "E" : "W";
+                    + String.valueOf(new java.text.DecimalFormat("#.###").format(s)) + "\"";
+            if (dd != 0) {
+                if (t == coordinate.type.latitude) r += (dd > 0) ? " N" : " S";
+                if (t == coordinate.type.longitude) r += (dd > 0) ? " E" : " W";
             }
             return r;
         }

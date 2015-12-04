@@ -1,8 +1,13 @@
 2015-12-03
 ----------
-* added parameter to coordinate constructor; this change effects
+* added parameter to concepts.location.coordinate constructor; this change effects
 the location attribute latitude and longitude (since changed as well)
+* removed parameter from concepts.location.coordinates.toSexigesimal (no longer needed now that
+type is specified)
 * added exception to coordinate constructor when validation of the
 coordinate l is not within range; latitude φ {-90 > φ > 90}, longitude λ {-180 > λ > 180}
 * added test directory with junit testing support
 * added boundary testing of concepts.location.isValid(double, type)
+* added test of concepts.location.toSexigesimal for hemisphere in string
+* added tests of concepts.location.coordinate constructor (both valid and invalid testing)
+

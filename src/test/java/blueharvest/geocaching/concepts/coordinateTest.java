@@ -8,16 +8,57 @@ import static org.junit.Assert.*;
 
 /**
  * test the coordinate class
- * //@Test(expected = IllegalArgumentException.class)
  *
  * @author jmb
  * @since 2015-12-03
  */
 public class coordinateTest {
 
-    private static double[] latitudes = {-90.0000001, -90, 0, 90, 90.0000001};
-    private static double[] longitudes = {-180.0000001, -180, 0, 180, 180.0000001};
+    /* each array contains values for testing, do not modify */
+    private static final double[] latitudes = {-90.0000001, -90, 0, 90, 90.0000001};
+    private static final double[] longitudes = {-180.0000001, -180, 0, 180, 180.0000001};
 
+    /** latitude out of bounds test */
+    @Test(expected = IllegalArgumentException.class)
+    public void newLatitudeTest1() {
+        new location.coordinate(latitudes[0], location.coordinate.type.latitude);
+    }
+
+    /** latitude out of bounds test */
+    @Test(expected = IllegalArgumentException.class)
+    public void newLatitudeTest2() {
+        new location.coordinate(latitudes[4], location.coordinate.type.latitude);
+    }
+
+    /** latitude in range test */
+    @Test
+    public void newLatitudeTest3() {
+        new location.coordinate(latitudes[1], location.coordinate.type.latitude);
+        new location.coordinate(latitudes[2], location.coordinate.type.latitude);
+        new location.coordinate(latitudes[3], location.coordinate.type.latitude);
+    }
+
+    /** longitude out of bounds test */
+    @Test(expected = IllegalArgumentException.class)
+    public void newLongitudeTest1() {
+        new location.coordinate(longitudes[0], location.coordinate.type.longitude);
+    }
+
+    /** longitude out of bounds test */
+    @Test(expected = IllegalArgumentException.class)
+    public void newLongitudeTest2() {
+        new location.coordinate(longitudes[4], location.coordinate.type.longitude);
+    }
+
+    /** longitude in range test */
+    @Test
+    public void newLongitudeTest3() {
+        new location.coordinate(longitudes[1], location.coordinate.type.longitude);
+        new location.coordinate(longitudes[2], location.coordinate.type.longitude);
+        new location.coordinate(longitudes[3], location.coordinate.type.longitude);
+    }
+
+    @Before
     public void setUp() throws Exception {
     }
 
@@ -49,6 +90,14 @@ public class coordinateTest {
 
     @Test
     public void testToSexigesimal() throws Exception {
-
+        assertTrue(new location.coordinate(latitudes[1], location.coordinate.type.latitude)
+                .toSexigesimal().contains("S"));
+        assertTrue(new location.coordinate(latitudes[3], location.coordinate.type.latitude)
+                .toSexigesimal().contains("N"));
+        assertTrue(new location.coordinate(longitudes[1], location.coordinate.type.longitude)
+                .toSexigesimal().contains("W"));
+        assertTrue(new location.coordinate(longitudes[3], location.coordinate.type.longitude)
+                .toSexigesimal().contains("E"));
     }
+
 }
