@@ -3,6 +3,7 @@ package blueharvest.geocaching.soap.objects;
 /**
  * @author jmb
  * @since 2015-11-07
+ * @deprecated no replacement
  */
 public class database {
 

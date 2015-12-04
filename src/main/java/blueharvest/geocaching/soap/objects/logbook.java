@@ -105,7 +105,8 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
      * @deprecated no replacement, a logbook is inserted with a geocache
      */
     public static boolean insert() {
-        org.ksoap2.serialization.SoapObject request
+        throw new java.lang.UnsupportedOperationException("No longer supported");
+        /*org.ksoap2.serialization.SoapObject request
                 = new blueharvest.geocaching.soap.request("InsertLogbook");
         final String ns = "http://blueharvestgeo.com/webservices/";
         org.ksoap2.serialization.SoapObject image
@@ -126,7 +127,7 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
             return response != null && Boolean.parseBoolean(response.toString());
         } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException ex) {
             throw new RuntimeException(ex.getMessage());
-        } // org.ksoap2.SoapFault, org.ksoap2.transport.HttpResponseException, java.lang.Exception
+        } // org.ksoap2.SoapFault, org.ksoap2.transport.HttpResponseException, java.lang.Exception*/
     }
 
     /**
@@ -457,6 +458,7 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
             extends java.util.ArrayList<blueharvest.geocaching.concepts.logbook.entry> {
 
         private entries() {
+            super();
         }
 
         /**
@@ -468,6 +470,7 @@ public class logbook extends blueharvest.geocaching.concepts.logbook {
          * @since 2015-11-27
          */
         public entries(java.util.UUID logbookid) {
+            super();
             org.ksoap2.serialization.SoapObject request
                     = new blueharvest.geocaching.soap.request("GetLogbookEntries");
             // parameters

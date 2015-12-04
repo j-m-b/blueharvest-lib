@@ -289,7 +289,9 @@ public class geocache extends blueharvest.geocaching.concepts.geocache {
 
     /**
      * <h3>checks whether the geocache exists</h3>
-     *
+     * an alternative method to checking is getting a geocache by code;
+     * if the result is null, the geocache code is available;
+     * otherwise, the geocache code is taken or exists
      * @param code geocache code
      * @return true/false depending in whether the geocache exists
      * @throws java.lang.UnsupportedOperationException not supported yet

@@ -10,4 +10,17 @@ coordinate l is not within range; latitude φ {-90 > φ > 90}, longitude λ {-18
 * added boundary testing of concepts.location.isValid(double, type)
 * added test of concepts.location.toSexigesimal for hemisphere in string
 * added tests of concepts.location.coordinate constructor (both valid and invalid testing)
+* deprecated soap.objects.database, no replacement, it's simply not feasible to perform this
+action anymore
+* added tests of soap.objects.geocache
 
+2015-12-04
+----------
+* added tests of soap.objects.user
+* added tests of soap.objects.logbook
+* deprecated with exception soap.objects.logbook.insert
+* added tests of soap.objects.logbook.entry
+* added tests of soap.objects.logbook.entries
+* added tests of soap.objects.image
+* added tests of soap.objects.geocache.geocaches
+* added tests of soap.objects.location
